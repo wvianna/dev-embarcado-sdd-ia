@@ -1,34 +1,60 @@
 # Desenvolvimento de Software Embarcado com SDD e IA
 
-Repositório de estudos, materiais didáticos e experimentos sobre desenvolvimento de software embarcado em microcontroladores com apoio de inteligência artificial e **Software Specification-Driven Development (SDD)**.
+Repositório de estudos, materiais didáticos e experimentos sobre desenvolvimento de software embarcado com apoio de IA e Software Specification-Driven Development (SDD).
 
-O projeto investiga como especificações, critérios de aceite, testes e documentação podem orientar agentes de IA na criação e manutenção de firmware, mantendo o controle humano sobre requisitos, decisões técnicas e validação em hardware.
+O objetivo é mostrar como transformar necessidade de produto em comportamento verificável de firmware, mantendo rastreabilidade entre requisitos, design, implementação, testes e evidências.
 
-## Conteúdo
+## Estrutura do repositório
 
-- [`sdd/`](sdd/): skill e materiais sobre planejamento orientado a especificações, incluindo fluxo adaptativo para projetos embarcados.
-- [`docs/`](docs/): requisitos, referências e anotações sobre ferramentas e abordagens de SDD, como Spec Kit e Tessl.
-- [`apresentação/`](apresentação/): textos e materiais de apresentação sobre desenvolvimento de software com IA.
-- [`slides-Rogerio/`](slides-Rogerio/): apresentações e conteúdos complementares.
-- [`conteúdo e bibliografia.txt`](conteúdo%20e%20bibliografia.txt): conteúdo programático e referências de estudo.
-- [`ementa-objetivos-conteúdo - desenvolvimento de software embarcadao com auxílio de ia - optativa.pdf`](ementa-objetivos-conteúdo%20-%20desenvolvimento%20de%20software%20embarcadao%20com%20auxílio%20de%20ia%20-%20optativa.pdf): ementa da disciplina.
-- [`.github/skills/sdd-embarcado/`](.github/skills/sdd-embarcado/): skill compartilhável para especificar, implementar e validar software embarcado.
+- [.github/skills/sdd-embarcado/](.github/skills/sdd-embarcado/): skill para planejamento e implementação de firmware com SDD adaptativo.
+- [apresentação/](apresentação/): materiais da palestra e conteúdo introdutório (LLM, SDD, fluxo prático no VS Code).
+- [docs/](docs/): notas e referências sobre ferramentas e abordagens (Spec Kit, Tessl etc.).
+- [material-terceiros/](material-terceiros/): materiais de apoio externos.
+- [conteúdo e bibliografia.txt](conteúdo%20e%20bibliografia.txt): conteúdo programático e bibliografia base.
+- [ementa-objetivos-conteúdo - desenvolvimento de software embarcadao com auxílio de ia - optativa.pdf](ementa-objetivos-conteúdo%20-%20desenvolvimento%20de%20software%20embarcadao%20com%20auxílio%20de%20ia%20-%20optativa.pdf): ementa da disciplina.
 
-## Abordagem
+## Abordagem SDD para embarcados
 
-O material combina:
+O fluxo recomendado neste repositório:
 
-1. levantamento de requisitos e critérios de aceite;
-2. decisões de arquitetura e restrições do microcontrolador;
-3. planejamento incremental conforme o tamanho e o risco da mudança;
-4. implementação assistida por IA;
-5. compilação, testes e validação em host, simulador, bancada ou HIL;
-6. documentação, rastreabilidade e handoff para continuidade do trabalho.
+1. definir problema, restrições e critérios de aceitação;
+2. explicitar requisitos funcionais e não funcionais;
+3. projetar arquitetura compatível com MCU, periféricos e timing;
+4. quebrar em tarefas pequenas e verificáveis;
+5. implementar com assistência de IA;
+6. validar em host, bancada e/ou HIL;
+7. registrar evidências de teste e decisões técnicas.
 
-A proposta é evitar tanto a codificação sem especificação quanto processos excessivamente burocráticos para alterações pequenas. O nível de formalidade deve acompanhar a complexidade, o risco e a necessidade de validação física.
+Esse modelo evita dois extremos: codificar sem especificação e burocratizar mudanças simples. A profundidade do processo deve acompanhar risco, criticidade e impacto da alteração.
 
-## Como usar
+## Demonstração prática da palestra
 
-Comece pelos requisitos e pela ementa em [`docs/`](docs/) e [`conteúdo e bibliografia.txt`](conteúdo%20e%20bibliografia.txt). Para aplicar o método em um projeto de firmware, consulte a skill [`sdd-embarcado`](.github/skills/sdd-embarcado/SKILL.md) e copie o modelo de constituição disponível em [`references/constitution.md`](.github/skills/sdd-embarcado/references/constitution.md) para o projeto-alvo.
+Na apresentação principal ([apresentação/palestra_sdd_software_embarcado.md](apresentação/palestra_sdd_software_embarcado.md)), a demonstração prática inclui:
 
-Este repositório é principalmente documental e educacional. Os comandos de compilação, testes e gravação dependem do microcontrolador, da placa, do SDK e da toolchain definidos em cada projeto de firmware.
+- ESP8266 em modo AP;
+- SSID baseado no MAC;
+- rede aberta com IP fixo do MCU em 192.168.4.1/24;
+- leitura de temperatura com DS18B20 em D2/GPIO4;
+- leitura analógica em A0 (0 a 1023);
+- dashboard web embarcado exibindo valores em tempo real.
+
+## Use a skill sdd-embarcado
+
+Para implementar firmware com rastreabilidade, use a skill:
+
+- [SKILL.md](.github/skills/sdd-embarcado/SKILL.md)
+
+Quando usar:
+
+- início de uma nova feature embarcada;
+- definição de tratamento de falhas e requisitos de tempo real;
+- planejamento de tarefas e critérios de verificação;
+- preparação de validação em bancada ou HIL.
+
+Material de apoio da skill:
+
+- [constitution.md](.github/skills/sdd-embarcado/references/constitution.md)
+
+## Observações
+
+Este repositório é majoritariamente educacional. Comandos de build, flash e teste variam conforme placa, SDK e toolchain do projeto-alvo.
