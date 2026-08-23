@@ -183,12 +183,16 @@ Há ainda diferenças entre:
 - capacidade de raciocínio;
 - limites de uso.
 
+---
+---
+
 ## No desenvolvimento embarcado
 
 Um fluxo eficiente tenta:
 
 > **fornecer o contexto necessário, e não todo o repositório indiscriminadamente.**
 
+---
 ---
 
 # 7. Execução local × provedor
@@ -929,7 +933,7 @@ E atualizar a saída em até 10 ms.
 
 ---
 
-# 30. FR × NFR
+# 30.Requisitos Funcionais e Não-Funcionais.
 
 ## FR — Functional Requirement
 
@@ -1099,7 +1103,7 @@ Periféricos e temporização modelados.
 
 Pinos, níveis, sensores, atuadores, reset, watchdog e consumo.
 
-## HIL
+## HIL - Hardware-in-the-loop
 
 Integração com hardware real, timing, comunicação e falhas.
 
@@ -1153,7 +1157,7 @@ A pergunta final é:
 
 ```text
 FR-001
-Ao pressionar o botão, o LED deve alternar seu estado.
+Ao pressionar o botão, o LED deve alternar seu estado lógico.
 
 NFR-001
 O evento deve ser reconhecido entre 1 ms e 10 ms.
@@ -1241,6 +1245,8 @@ No VS Code:
 7. execute os gates;
 8. registre a evidência.
 
+Nota: não esqueça de preencher o arquivo `TARGET.md` com informações do hardware e `constitution.md` com regras do projeto.
+
 ---
 
 # 41. Fluxo de uma feature no VS Code
@@ -1270,25 +1276,70 @@ flowchart TD
 
 ## Cenário
 
-> "Adicionar leitura de temperatura a cada 1 segundo e enviar a leitura pela UART."
+> "Implementar no ESP8266 um dashboard web embarcado para exibir temperatura e sinal analógico em tempo real."
 
-### A IA não deve começar gerando código.
+### Escopo da demonstração
 
-Primeiro:
+- MCU: ESP8266
+- Sensor de temperatura: DS18B20 em D2 / GPIO4 (OneWire)
+- Entrada analógica: A0 com faixa 0 a 1023
+- Atualização de aquisição: 1 Hz
+- Interface com usuário: servidor HTTP local no próprio MCU
 
-**Perguntar / verificar:**
+### Requisitos funcionais
 
-- qual MCU?
-- qual sensor?
-- qual interface?
-- qual baud rate?
-- qual faixa?
-- qual unidade?
-- qual precisão?
-- qual timeout?
-- qual comportamento de erro?
-- qual RTOS?
-- qual pino?
+- Ler o DS18B20 periodicamente e converter para graus Celsius
+- Ler A0 periodicamente e manter valor bruto (0 a 1023)
+- Expor endpoint JSON com os valores atuais (temperatura e A0)
+- Servir página web com dashboard simples e atualização automática
+- Exibir no dashboard: temperatura, valor de A0 e timestamp da última atualização
+
+### Requisitos de rede (modo AP)
+
+- Operar em modo Access Point
+- SSID derivado do endereço MAC do ESP8266
+    - Exemplo: `ESP8266-1A2B3C` (3 últimos bytes do MAC)
+- Wi-Fi sem encriptação (rede aberta)
+- Rede local: `192.168.4.0/24`
+- IP fixo do MCU/AP: `192.168.4.1`
+- Gateway: `192.168.4.1`
+- Máscara: `255.255.255.0`
+- DHCP do AP deve entregar IP aos clientes nessa sub-rede
+
+### Critérios de aceitação
+
+- Ao energizar, o AP deve ficar visível com SSID baseado no MAC
+- Ao conectar ao AP, o cliente deve receber IP da rede `192.168.4.0/24`
+- O endereço `http://192.168.4.1` deve abrir o dashboard
+- O dashboard deve atualizar automaticamente sem recarregar a página
+- A leitura de A0 deve permanecer no intervalo `0..1023`
+- Em falha de leitura do DS18B20, o dashboard deve indicar erro de sensor sem travar a interface
+
+---
+
+# 42A. Use a skill para acelerar SDD
+
+## Recomendação prática
+
+Use a skill especializada para transformar intenção em execução com rastreabilidade.
+
+### Skill sugerida
+
+- `sdd-embarcado`
+
+### Quando acionar
+
+- Ao iniciar uma nova funcionalidade de firmware
+- Ao detalhar requisitos de tempo real, segurança e comportamento de falha
+- Ao quebrar a implementação em tarefas verificáveis
+- Ao preparar testes HOST, bancada e HIL
+
+### Ganhos esperados
+
+- Especificações mais claras antes do código
+- Menos retrabalho por ambiguidade de requisitos
+- Melhor alinhamento entre firmware, testes e evidências
+- Entregas mais previsíveis no ciclo de desenvolvimento
 
 ---
 
