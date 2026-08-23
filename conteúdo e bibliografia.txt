@@ -1,0 +1,121 @@
+CONTEÚDOS PROGRAMÁTICOS:
+
+1 — Inteligência Artificial aplicada ao desenvolvimento de software
+Evolução dos modelos de Inteligência Artificial aplicados à programação.
+1.1 - Large Language Models (LLMs) e geração de código.
+1.2 - Assistentes de programação e agentes de desenvolvimento.
+1.3 - Mudanças recentes no desenvolvimento de software assistido por IA.
+1.4 - Vibe coding e suas limitações.
+1.5 - IA como ferramenta de apoio à engenharia de software.
+1.6 - Limitações, erros, alucinações e confiabilidade de código produzido por IA.
+
+2 — Desenvolvimento baseado em especificação
+2.1 - Conceitos de requisitos e especificações de software.
+2.2 - Specification-Driven Development (SDD).
+2.3 - Especificação como fonte de verdade para o desenvolvimento.
+2.4 - Requisitos funcionais e critérios de aceitação.
+2.5 - Decomposição de especificações em tarefas de desenvolvimento.
+2.6 - Relação entre especificação, implementação e testes.
+2.7 - Rastreabilidade entre requisitos, código e testes.
+
+3 — IA integrada ao ambiente de desenvolvimento
+3.1 - Modelos de IA integrados às IDEs.
+3.2 - Workspace e contexto do projeto.
+3.3 - Engenharia de contexto (Context Engineering).
+3.4 - Instruções, regras e arquivos de contexto.
+3.5 - Utilização de documentação técnica, datasheets e manuais como contexto.
+3.6 - Técnicas de interação com modelos de IA para desenvolvimento de software.
+3.7 - Geração, explicação, análise, documentação e refatoração de código.
+
+4 — Agentes de programação e Harness Engineering
+4.1 - Conceito de agente de programação.
+4.2 - Assistentes versus agentes.
+4.3 - Autonomia e utilização de ferramentas.
+4.4 - Ciclo agente–ferramenta–observação–feedback.
+4.5 - Conceito de Harness Engineering.
+4.6 - Contexto, ferramentas, permissões, memória e estado.
+4.7 - Testes e mecanismos de feedback para agentes.
+4.8 - Observabilidade e controle da execução.
+4.9 - Integração entre modelos, agentes, IDE e ferramentas de desenvolvimento.
+
+5 — Desenvolvimento de software para microcontroladores
+5.1 - Fundamentos de programação para sistemas embarcados.
+5.2 - Organização de projetos para microcontroladores.
+5.3 - Configuração e utilização de periféricos.
+5.4 - GPIO e interfaces de entrada e saída.
+5.5 - Temporização, timers e interrupções.
+5.6 - Conversão analógico-digital (ADC).
+5.7 - Modulação por largura de pulso (PWM).
+5.8 - Comunicação serial e interfaces de comunicação, conforme a plataforma utilizada.
+5.9 - Utilização de SDKs, bibliotecas e APIs de microcontroladores.
+5.10 - Compilação, gravação e execução de software em hardware.
+
+6 — Desenvolvimento embarcado assistido por IA
+6.1 - Aplicação de SDD ao desenvolvimento para microcontroladores.
+6.2 - Geração de código embarcado assistida por IA.
+6.3 - Utilização de IA para configuração de periféricos.
+6.4 - Análise e interpretação de código produzido por IA.
+6.5 - Utilização de IA para diagnóstico de erros.
+6.6 - Depuração assistida por IA.
+6.7 - Refatoração e melhoria de código.
+6.8 - Geração de testes assistida por IA.
+6.9 - Interação entre agente, compilador e hardware.
+
+7 — Testes, verificação e validação
+7.1 - Verificação e validação de software embarcado.
+7.2 - Testes funcionais.
+7.3 - Testes de limites e condições de erro.
+7.4 - Critérios de aceitação.
+7.5 - Testes derivados de especificações.
+7.6 - Validação experimental em hardware.
+7.7 - Análise de erros de compilação, lógica, execução e temporização.
+7.8 - Utilização de medições e instrumentos para validação.
+7.9 - Registro de evidências e resultados.
+7.10 - Rastreabilidade entre especificação, código, teste e resultado.
+
+8 — Projeto prático de desenvolvimento assistido por IA
+8.1 - Definição e análise de uma especificação.
+8.2 - Preparação do contexto do projeto.
+8.3 - Desenvolvimento utilizando IA integrada à IDE.
+8.4 - Aplicação de SDD, agentes e Harness.
+8.5 - Implementação em microcontrolador.
+8.6 - Testes e depuração.
+8.7 - Validação no hardware didático.
+8.8 - Documentação do desenvolvimento.
+8.9 - Análise crítica da participação da IA no processo.
+8.10 - Apresentação e demonstração do sistema desenvolvido.
+
+COMPETÊNCIAS DESENVOLVIDAS: 
+Competências gerais:
+CG3: conceber, projetar e analisar sistemas, produtos (bens e serviços), componentes ou processos.
+Competências específicas:
+CE1: Conceber, projetar, implementar, melhorar e operar sistemas de controle automático com base na análise e compreensão dos problemas de engenharia;
+CE3: Desenvolver, otimizar e aperfeiçoar produtos e serviços de softwares para controle de processos industriais/empresariais/prediais/urbanos/ambientais;
+CE10: Atuar em empresas de engenharia modelando, projetando e integrando sistemas.
+REFERÊNCIAS:
+BIBLIOGRAFIA BÁSICA: 
+VALVANO, Jonathan W.; YERRABALLI, Ramesh. Embedded Systems – Shape the World. Austin: University of Texas at Austin, 2022. Disponível online: Acesso em: 21 ago. 2026.
+https://users.ece.utexas.edu/~valvano/Volume1/E-Book/
+https://users.ece.utexas.edu/~valvano/Volume1/IntroToEmbSys
+
+2. BÖCKELER, Birgitta. Understanding Spec-Driven-Development: Kiro, spec-kit, and Tessl. Martin Fowler, 2025. Disponível online: Acesso em: 21 ago. 2026.
+https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html
+
+3. OPENAI. Harness Engineering: leveraging Codex in an agent-first world. OpenAI, 2026. Disponível online: Acesso em: 21 ago. 2026.
+https://openai.com/pt-BR/index/harness-engineering/
+
+
+BIBLIOGRAFIA COMPLEMENTAR: 
+ANTHROPIC. Effective Harnesses for Long-Running Agents. Anthropic Engineering, 2025. Disponível online: Acesso em: 21 ago. 2026.
+https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents
+2. RAJASEKARAN, Prithvi. Harness Design for Long-Running Application Development. Anthropic Engineering, 2026. Disponível online: Acesso em: 21 ago. 2026.
+https://www.anthropic.com/engineering/harness-design-long-running-apps
+3. ANTHROPIC. Effective Context Engineering for AI Agents. Anthropic Engineering, 2025. Disponível online: Acesso em: 21 ago. 2026.
+https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents
+4. ANTHROPIC. Demystifying Evals for AI Agents. Anthropic Engineering, 2026. Disponível online: Acesso em: 21 ago. 2026.
+https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents
+5. ANTHROPIC. Building Effective Agents. Anthropic, 2024. Disponível online: Acesso em: 21 ago. 2026.
+https://www.anthropic.com/engineering/building-effective-agents
+6. GITHUB. GitHub Copilot Documentation. Disponível em: . Acesso em: 21 ago. 2026.
+https://docs.github.com/en/copilot
+

@@ -1,0 +1,61 @@
+# Sistema operacional
+.DS_Store
+Thumbs.db
+*~
+
+# Editores e IDEs
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+.idea/
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.python-version
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.npm/
+
+# Firmware e ferramentas embarcadas
+.pio/
+build/
+out/
+debug/
+*.elf
+*.bin
+*.hex
+*.map
+*.uf2
+*.dfu
+*.o
+*.a
+
+# Dados e logs locais
+*.log
+*.tmp
+*.bak
+logs/*.pid
+
+# Segredos e configurações locais
+.env
+.env.*
+!.env.example
