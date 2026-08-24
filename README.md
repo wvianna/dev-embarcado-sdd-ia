@@ -63,6 +63,12 @@ Na apresentação principal ([apresentação/palestra_sdd_software_embarcado.md]
 
 O firmware possui indicação numérica, scan OneWire, AP, HTTP, endpoint JSON, gauge e gráfico de tendência da temperatura (20–40 °C) e do ADC (0–1023), ambos com histórico limitado a 60 pontos. Os gauges ficam lado a lado, assim como os gráficos, e o timestamp permanece no JSON sem quadro separado.
 
+### Exemplo visual do estudo de caso
+
+![Dashboard web embarcado](imagens/dashboard-web.png)
+
+Esta imagem é um exemplo do estudo de caso implementado com a skill [sdd-embarcado](SKILL/sdd-embarcado/SKILL.md) e orientado pela especificação da feature em [.specs/features/dashboard-esp8266/](.specs/features/dashboard-esp8266/). Ela ilustra a interface web executada no ESP8266 para visualizar as leituras do DS18B20 e do sinal analógico.
+
 A implementação segue o processo SDD da skill em [firmware/](firmware/), com especificação/design/tarefas em `.specs/features/dashboard-esp8266/` e validação registrada em `SUMMARY.md`.
 
 ## Use a skill sdd-embarcado
