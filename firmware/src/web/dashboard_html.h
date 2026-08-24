@@ -15,21 +15,20 @@ static const char DASHBOARD_HTML[] PROGMEM = R"rawliteral(
   :root { color-scheme: dark; --bg: #0f172a; --panel: #1e293b; --line: #334155;
           --text: #e2e8f0; --muted: #94a3b8; --cyan: #38bdf8; --green: #34d399; }
   * { box-sizing: border-box; }
-  body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text);
-         margin: 0; min-height: 100vh; padding: 1rem; }
-  main { margin: auto; width: min(100%, 760px); }
-  h1 { font-size: 1.25rem; margin: .2rem 0 1rem; color: var(--cyan); }
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text);
+      margin: 0; min-height: 100vh; padding: .65rem; }
+    main { margin: auto; width: min(100%, 900px); }
+    h1 { font-size: 1.15rem; margin: 0 0 .55rem; color: var(--cyan); }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; }
   .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
-           padding: 1rem; box-shadow: 0 8px 24px rgba(0,0,0,.25); }
-  .wide { grid-column: 1 / -1; }
+        padding: .65rem; box-shadow: 0 8px 24px rgba(0,0,0,.25); min-width: 0; }
   .label { color: var(--muted); font-size: .82rem; }
   .value { display: block; color: var(--green); font-size: 1.8rem; font-weight: 700;
            font-variant-numeric: tabular-nums; margin-top: .25rem; }
   .value.err { color: #f87171; font-size: 1.1rem; }
   canvas { display: block; width: 100%; height: auto; }
-  .meta { margin-top: 1rem; font-size: .76rem; color: #64748b; text-align: center; }
-  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } .wide { grid-column: auto; } }
+  .meta { margin-top: .55rem; font-size: .72rem; color: #64748b; text-align: center; }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -38,10 +37,10 @@ static const char DASHBOARD_HTML[] PROGMEM = R"rawliteral(
     <div class="grid">
       <section class="panel"><span class="label">Temperatura</span><span class="value" id="temp">—</span></section>
       <section class="panel"><span class="label">ADC (A0)</span><span class="value" id="adc">—</span></section>
-      <section class="panel wide"><span class="label">Gauge de temperatura (20–40 °C)</span><canvas id="tempGauge" width="700" height="180"></canvas></section>
-      <section class="panel wide"><span class="label">Tendência de temperatura (20–40 °C)</span><canvas id="tempTrend" width="700" height="240"></canvas></section>
-      <section class="panel wide"><span class="label">Gauge do sinal analógico (0–1023)</span><canvas id="adcGauge" width="700" height="180"></canvas></section>
-      <section class="panel wide"><span class="label">Tendência do sinal analógico (0–1023)</span><canvas id="adcTrend" width="700" height="240"></canvas></section>
+      <section class="panel"><span class="label">Gauge de temperatura (20–40 °C)</span><canvas id="tempGauge" width="700" height="180"></canvas></section>
+      <section class="panel"><span class="label">Gauge do sinal analógico (0–1023)</span><canvas id="adcGauge" width="700" height="180"></canvas></section>
+      <section class="panel"><span class="label">Tendência de temperatura (20–40 °C)</span><canvas id="tempTrend" width="700" height="240"></canvas></section>
+      <section class="panel"><span class="label">Tendência do sinal analógico (0–1023)</span><canvas id="adcTrend" width="700" height="240"></canvas></section>
     </div>
     <div class="meta">Atualização automática a cada 1 s · 192.168.4.1</div>
   </main>

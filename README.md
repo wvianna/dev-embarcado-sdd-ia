@@ -61,7 +61,7 @@ Na apresentação principal ([apresentação/palestra_sdd_software_embarcado.md]
 - dashboard web embarcado exibindo valores em tempo real;
 - indicação numérica, gauge e gráfico de tendência da temperatura (20–40 °C), além de gauge e tendência do ADC (0–1023).
 
-O firmware possui indicação numérica, scan OneWire, AP, HTTP, endpoint JSON, gauge e gráfico de tendência da temperatura (20–40 °C) e do ADC (0–1023), ambos com histórico limitado a 60 pontos. O timestamp permanece no JSON e não é exibido em quadro separado.
+O firmware possui indicação numérica, scan OneWire, AP, HTTP, endpoint JSON, gauge e gráfico de tendência da temperatura (20–40 °C) e do ADC (0–1023), ambos com histórico limitado a 60 pontos. Os gauges ficam lado a lado, assim como os gráficos, e o timestamp permanece no JSON sem quadro separado.
 
 A implementação segue o processo SDD da skill em [firmware/](firmware/), com especificação/design/tarefas em `.specs/features/dashboard-esp8266/` e validação registrada em `SUMMARY.md`.
 

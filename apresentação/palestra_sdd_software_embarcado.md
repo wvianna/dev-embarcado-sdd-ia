@@ -1447,7 +1447,8 @@ flowchart TD
 - Exibir a temperatura e o valor de A0 em indicação numérica
 - Exibir a temperatura em um gauge com escala e unidade em graus Celsius com range de 20 a 40 °C
 - - Exibir o valor de A0 em um gauge com escala de 0 a 1023
-- Exibir gráfico de tendência com o histórico recente das leituras de temperatura e A0 com ranges de 20 a 40 °C e 0 a 1023, respectivamente
+- Exibir gráfico de tendência com o histórico recente das leituras de temperatura e A0 com ranges de 20 a 40 °C e 0 a 1023, respectivamente.
+- O layout do dashboard deve ser responsivo e adaptável a diferentes tamanhos de tela e provendo uma experiência de usuário consistente em dispositivos móveis e desktops
 - Indicar ausência/falha do DS18B20 sem interromper o dashboard
 
 ### Requisitos de rede (modo AP)

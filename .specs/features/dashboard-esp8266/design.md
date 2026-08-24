@@ -59,6 +59,8 @@ struct Sample {
 - **Escalas:** temperatura fixa em 20–40 °C; A0 fixa em 0–1023.
 - **Histórico:** manter no navegador uma janela limitada de pontos por sinal; descartar o ponto mais antigo ao atingir o limite.
 - **Layout:** não exibir quadro separado de “Última atualização”; o timestamp permanece somente no payload JSON.
+- **Layout responsivo:** usar duas colunas no desktop, com os gauges lado a lado e os gráficos de tendência lado a lado; em telas estreitas, empilhar os painéis para preservar a leitura.
+- **Viewport:** manter dimensões compactas para que o dashboard completo seja visualizado sem rolagem em telas desktop usuais.
 - **Watchdog:** `ESP.wdtFeed()` no loop; `ESP.wdtDisable()` não utilizado.
 - **Clock:** 80 MHz (padrão).
 
