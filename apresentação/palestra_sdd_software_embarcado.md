@@ -15,27 +15,23 @@ paginate: true
 
 ---
 
-# 1. O que vamos aprender
+# 1. O que será apresentado
 
 - O que são **LLM, tokens, janela de contexto e custo**
 - Execução de LLM **local × provedor remoto**
-- O que é **harness** e por que ele importa
-- O conceito de **SDD — Specification-Driven Development**
-- Como aplicar SDD ao **software embarcado**
-- Fundamentos de MCU necessários para conversar corretamente com uma IA
-- Como usar `SKILL.md` e `constitution.md` dentro do VS Code
-- Como transformar uma funcionalidade em:
-  - especificação
-  - design
-  - tarefas
-  - implementação
-  - testes
-  - evidências
+- O que é **harness** e como ele fecha o ciclo entre intenção e evidência
+- O conceito de **SDD — Specification-Driven Development** e seu uso adaptativo
+- O papel dos artefatos: **Specification, Architecture, Plan, Task, Rules, Skills e Context**
+- Como usar `SKILL.md` e `constitution.md` para orientar a implementação no VS Code
+- A importância dos fundamentos de MCU, hardware, interfaces, RTOS, timing, memória, energia e falhas no contexto de SDD
+- Como transformar uma funcionalidade em especificação, design, tarefas, código, testes e evidências
+- Como garantir rastreabilidade, contratos, ADRs, exemplos e quality gates
 - Como distinguir **HOST, SIMULADOR, BANCADA e HIL**
+- Demonstração prática: **ESP8266 em modo AP**, DS18B20 no D2/GPIO4, leitura de A0 e dashboard web embarcado
 
 ---
 
-# 2. Uma provocação
+# 2. Uma provocação (apêndice A)
 
 ## "Se a IA escreve o código, o programador acabou?"
 
@@ -58,7 +54,9 @@ E ainda:
 
 **SDD muda o foco de "pedir código" para "definir e verificar comportamento".**
 
-**Ler datasheet é essencial (ou pedir para uma AI auxiliar na interpretação).**
+**Ler datasheet é essencial — ou pedir para uma IA auxiliar na interpretação.**
+
+***A IA pode escrever o código. O engenheiro continua responsável por definir o comportamento, as restrições e as evidências necessárias para afirmar que o código está correto.***
 
 ---
 
@@ -70,7 +68,7 @@ Um LLM é um modelo treinado para trabalhar com sequências de tokens e prever c
 
 ```mermaid
 flowchart LR
-    A[Prompt] --> B[Tokens]
+    A[Prompt] --> B[Tokens de entrada]
     B --> C[LLM]
     C --> D[Tokens de saída]
     D --> E[Resposta]
@@ -191,6 +189,8 @@ Há ainda diferenças entre:
 Um fluxo eficiente tenta:
 
 > **fornecer o contexto necessário, e não todo o repositório indiscriminadamente.**
+>
+> **Regra de OURO: Prefira arquivos Markdown ou HTML. Evite arquivos binários, imagens e PDFs sempre que houver uma alternativa textual equivalente, pois podem aumentar desnecessariamente o consumo de tokens devido a metadados e conteúdo não textual.**
 
 ---
 ---
@@ -249,24 +249,66 @@ No contexto de IA:
 
 ```mermaid
 flowchart LR
-    P[Prompt / tarefa] --> H[Harness]
+    P[Prompt / Tarefa] --> H[Harness]
+    H --> C[Contexto]
     H --> L[LLM]
     L --> T[Tools]
     T --> R[Resultado]
-    R --> E[Eval / métricas]
+    R --> E[Eval / Métricas]
     E --> H
+    H --> F[Feedback / Próxima ação]
 ```
 
-Um harness pode controlar:
+O harness pode controlar ou fornecer:
 
-- prompts;
-- contexto;
-- ferramentas;
-- número de passos;
-- testes;
-- métricas;
-- comparação entre modelos;
-- critérios de aprovação.
+- prompts e instruções;
+- contexto disponível para o modelo;
+- regras e políticas;
+- skills e procedimentos;
+- ferramentas (tools);
+- acesso ao filesystem e repositórios;
+- terminal e ambiente de execução;
+- número e sequência de passos;
+- execução de testes;
+- compiladores e analisadores;
+- simuladores ou hardware de teste;
+- métricas de desempenho;
+- logs e rastreabilidade;
+- critérios de aprovação ou reprovação;
+- comparação entre modelos, prompts ou estratégias.
+
+Assim, o harness não é simplesmente o modelo de IA. Ele é o ambiente controlado no qual o modelo trabalha.
+
+### Uma forma simples de visualizar
+
+                 ┌──────────────────────────┐
+                 │         HARNESS          │
+                 │                          │
+                 │  Contexto                │
+                 │  Rules                   │
+                 │  Skills                  │
+                 │  Tools                   │
+                 │  Testes                  │
+                 │  Métricas                │
+                 │  Avaliação               │
+                 │                          │
+                 │      ┌──────────┐        │
+                 │      │   LLM    │        │
+                 │      └────┬─────┘        │
+                 │           │              │
+                 │        Tools             │
+                 │           │              │
+                 │        Código            │
+                 │           │              │
+                 │        Testes            │
+                 │           │              │
+                 │       Resultados          │
+                 └───────────┬──────────────┘
+                             │
+                             ▼
+                         Avaliação
+
+
 
 ### Analogia embarcada
 
@@ -279,6 +321,62 @@ Você não pergunta apenas:
 Você pergunta:
 
 > "Em qual cenário, com qual entrada, com qual versão, com qual medição e com qual evidência?"
+
+> Por exemplo:
+```
+Firmware
+   │
+   ├── Entrada: 25 °C
+   ├── Alimentação: 3,3 V
+   ├── MCU: STM32H743
+   ├── Firmware: v1.4.2
+   ├── Frequência: 400 MHz
+   ├── RTOS: FreeRTOS
+   ├── Carga: 70 %
+   │
+   ▼
+Teste
+   │
+   ├── Timing
+   ├── RAM
+   ├── CPU
+   ├── Comunicação
+   └── Comportamento
+   │
+   ▼
+Evidências
+   │
+   ├── PASS
+   └── Métricas
+```
+O harness de IA segue uma lógica semelhante:
+```
+Tarefa
+   │
+   ├── Prompt
+   ├── Contexto
+   ├── Rules
+   ├── Skills
+   ├── Tools
+   └── Modelo
+   │
+   ▼
+Execução
+   │
+   ├── Código
+   ├── Compilação
+   ├── Testes
+   └── Correções
+   │
+   ▼
+Avaliação
+   │
+   ├── Resultado
+   ├── Métricas
+   ├── Custo
+   ├── Tempo
+   └── Critérios de aceitação
+```
 
 ---
 
@@ -344,6 +442,44 @@ Significa:
 
 > **definir comportamento observável e mantê-lo conectado à implementação e aos testes.**
 
+
+
+---
+## Mapa dos artefatos do SDD
+
+Os artefatos não competem entre si: cada um responde a uma pergunta diferente e ajuda o agente a trabalhar com menos ambiguidade.
+
+| Artefato | Pergunta que responde | Exemplo |
+|---|---|---|
+| **Specification** | O que deve existir? | `REQ-ADC-001`: ler o ADC a cada 1 ms, com resolução de 12 bits e erro máximo de ±2%. |
+| **Architecture / Design** | Como o sistema será organizado? | `Application → Control → Drivers → HAL → MCU`; a Application não acessa o ADC diretamente. |
+| **Plan** | Como organizar a construção? | Criar interface do ADC → configurar DMA → criar ISR → testar → validar em HIL. |
+| **Task / Issue** | Qual trabalho será executado agora? | `TASK-023`: implementar MAX485 em 115200 bps, 8N1, com timeout de 10 ms. |
+| **Rules** | Quais restrições são permanentes? | “Usar MISRA-C; nunca usar `malloc`.” |
+| **Skills** | Qual procedimento especializado usar? | “Implementar driver SPI para STM32.” |
+| **Context** | O que o agente precisa conhecer? | STM32H743, Cortex-M7, 400 MHz, FreeRTOS 11, pinout e datasheet. |
+| **Tests / Checks** | Como verificar o resultado? | `test_adc_sampling_rate()` deve comprovar 1000 amostras/s. |
+
+### Artefatos que fecham o contrato
+
+- **Acceptance Criteria:** define quando o requisito está concluído; por exemplo, manter a taxa entre 995 Hz e 1005 Hz durante 60 s.
+- **Interfaces / Contracts:** define como módulos conversam; por exemplo, `bool adc_read(adc_sample_t *sample);`.
+- **ADR:** registra decisões e motivos; por exemplo, usar DMA em vez de polling para não bloquear a CPU.
+- **Examples:** mostram o padrão local; por exemplo, preferir `gpio_write(LED_STATUS, true)` em vez de acessar o HAL diretamente.
+- **Checklists / Quality Gates:** impedem concluir com evidência insuficiente; por exemplo, exigir build sem warnings, testes, análise estática, verificação de stack e teste do watchdog.
+
+### Visão do fluxo
+
+```text
+Specification → Architecture → Plan → Task
+    Rules + Skills + Context orientam a execução
+    Code → Tests / Checks → Acceptance Criteria
+    ADRs, Examples e Quality Gates preservam decisões e padrões
+    Harness fornece ferramentas, compilador, Git e feedback ao agente
+```
+
+**Resumo:** Specification define o contrato; Architecture organiza o sistema; Plan e Task orientam a execução; os demais artefatos fornecem restrições, conhecimento, padrões e evidências.
+
 ---
 
 # 11. SDD adaptativo
@@ -365,7 +501,7 @@ Nem todo problema merece o mesmo processo.
 
 # 12. Arquivos do SDD
 
-O arquivo `SKILL.md` propõe uma estrutura organizada:
+O arquivo `SKILL.md` criado propõe uma estrutura organizada:
 
 ```text
 .specs/
@@ -458,11 +594,18 @@ Ele orienta a IA sobre:
 
 > **como conduzir o processo**
 
+
+---
+## UMA REFLEXÃO: a importância de conhecer a arquitetura da MCU.
+### Conhecer a arquitetura de uma MCU é o que diferencia quem apenas gera código com IA de quem constrói firmware profissional.
+### A IA é capaz de codificar rápido, mas ela não conhece os limites do seu hardware. Quando você domina conceitos como periféricos, interrupções e memória, consegue aplicar o Spec-Driven Development (SDD) para criar especificações técnicas precisas.
+### É essa especificação rigorosa que guia a IA a gerar um código realmente otimizado, seguro e adequado à realidade do chip, evitando bugs críticos de hardware.
+
 ---
 
-# 15. Primeiro conceito de MCU: o microcontrolador
+# 15. Conceito de MCU: o microcontrolador
 
-Uma MCU integra vários recursos em um único circuito integrado.
+Uma MCU (Microcontroller Unit)integra vários recursos em um único circuito integrado.
 
 ```mermaid
 flowchart TB
@@ -470,12 +613,16 @@ flowchart TB
     MCU --> CPU[CPU]
     MCU --> RAM[RAM]
     MCU --> FLASH[Flash]
+    MCU --> CLK[Clock System / PLL]
+    MCU --> PWR[Power / Reset / BOD]
+    MCU --> DMA[DMA Controller]
     MCU --> GPIO[GPIO]
-    MCU --> TIM[Timers]
-    MCU --> ADC[ADC]
-    MCU --> COM[Interfaces]
+    MCU --> TIM[Timers / PWM]
+    MCU --> ADC[ADC / DAC]
+    MCU --> COM[Interfaces / Bus]
     MCU --> WDG[Watchdog]
-    MCU --> INT[Interrupt Controller]
+    MCU --> INT[Interrupt Controller / NVIC]
+    MCU --> DBG[Debug / JTAG / SWD]
 ```
 
 A programação de firmware depende diretamente desses recursos.
@@ -495,7 +642,7 @@ Core
  └─ tasks
 ```
 
-## Multicore
+## Multicore (apêndice B)
 
 Dois ou mais núcleos.
 
@@ -840,7 +987,7 @@ Timer → ISR → fila → task → driver → ADC/sensor.
 
 ---
 
-# 27. RTOS
+# 27. RTOS (Apêndice C)
 
 Um RTOS organiza execução concorrente em tarefas/threads.
 
@@ -996,7 +1143,7 @@ O requisito permanece independente da implementação.
 
 ## Aqui está uma fronteira importante
 
-**Esta palestra trata do software embarcado.**
+**O assunto é software embarcado.**
 
 Ela **não substitui**:
 
@@ -1129,6 +1276,8 @@ Um teste HOST não prova:
 - interação com periféricos reais.
 
 O documento define explicitamente que hardware não deve ser declarado validado apenas por testes HOST.
+
+## Costumo afirmar: a teoria aceita tudo; a simulação aceita quase tudo; a bancada dá falsas esperanças; o teste de campo é onde a realidade cobra a conta.
 
 ---
 
@@ -1474,6 +1623,9 @@ flowchart LR
     E --> U
 ```
 
+---
+# IMPORTANTE
+
 A LLM é um **acelerador de trabalho**.
 
 Ela não substitui:
@@ -1584,7 +1736,7 @@ Exemplos:
 
 ---
 
-# 51. Gates
+# 51. Gates (apêndice D)
 
 Antes de considerar uma tarefa concluída:
 
@@ -1670,172 +1822,3 @@ EVIDÊNCIA
 A IA pode acelerar a engenharia.
 
 **Mas a engenharia continua sendo responsabilidade humana.**
-
----
-
-# 55. Roteiro do apresentador
-
-## Tempo sugerido: 90–120 min
-
-### Bloco 1 — IA e ferramentas (15–20 min)
-Slides 3–10
-
-Enfatizar:
-
-- tokens;
-- contexto;
-- custo;
-- local × remoto;
-- harness.
-
-### Bloco 2 — SDD (20–25 min)
-Slides 11–18
-
-Mostrar no VS Code:
-
-- `SKILL.md`;
-- `constitution.md`;
-- `.specs/`;
-- rastreabilidade.
-
-### Bloco 3 — Fundamentos de MCU (25–35 min)
-Slides 15–29
-
-Conectar:
-
-- GPIO;
-- ISR;
-- timers;
-- memória;
-- interfaces;
-- RTOS;
-- watchdog;
-- energia.
-
-### Bloco 4 — Aplicação prática (20–30 min)
-Slides 35–47
-
-Fazer uma demonstração ao vivo:
-
-> "Adicionar leitura de temperatura e transmitir pela UART."
-
----
-
-# 56. Demonstração no VS Code — roteiro
-
-### Etapa 1
-
-Abrir:
-
-```text
-SKILL.md
-constitution.md
-```
-
-Explicar que são as regras do processo.
-
-### Etapa 2
-
-Mostrar:
-
-```text
-.specs/project/
-.specs/codebase/
-.specs/features/
-```
-
-### Etapa 3
-
-Criar uma feature:
-
-```text
-.specs/features/temperature/spec.md
-```
-
-### Etapa 4
-
-Pedir à IA:
-
-> "Antes de implementar, leia a constituição, o TARGET e a especificação. Liste lacunas bloqueadoras."
-
-### Etapa 5
-
-Completar as informações de hardware.
-
-### Etapa 6
-
-Criar `design.md`.
-
-### Etapa 7
-
-Criar `tasks.md`.
-
-### Etapa 8
-
-Implementar uma tarefa por vez.
-
-### Etapa 9
-
-Executar build/testes.
-
-### Etapa 10
-
-Registrar `SUMMARY.md`.
-
----
-
-# 57. Pergunta para a turma
-
-## Imagine esta solicitação:
-
-> "Crie um firmware para ler um sensor a cada 100 ms usando interrupção e enviar os dados por USB."
-
-### O que está faltando?
-
-Possíveis respostas:
-
-- MCU;
-- sensor;
-- interface do sensor;
-- pinagem;
-- níveis elétricos;
-- tipo de USB;
-- velocidade/configuração;
-- formato do pacote;
-- frequência real;
-- precisão;
-- timeout;
-- comportamento de falha;
-- RTOS;
-- uso de RAM;
-- critério de teste.
-
-**Se a turma perceber isso, o objetivo central da palestra foi atingido.**
-
----
-
-# 58. Referência dos arquivos utilizados
-
-### `SKILL.md`
-
-O documento define o processo de SDD para software embarcado, incluindo princípios, artefatos, dimensionamento adaptativo, especificação, design, tarefas, execução, verificação e rastreabilidade.
-
-### `constitution.md`
-
-O documento define princípios estáveis para um projeto embarcado: segurança, determinismo, recursos, interfaces, qualidade, diagnóstico, recuperação, processo de mudança e gates.
-
-> Os dois arquivos devem ser tratados como exemplos de uma base de engenharia que pode ser adaptada ao projeto real.
-
----
-
-# 59. Última mensagem
-
-## Não pergunte apenas:
-
-> "Qual código a IA deve escrever?"
-
-Pergunte:
-
-> **"Qual comportamento devo especificar, quais restrições devem ser respeitadas e qual evidência provará que o firmware funciona no hardware real?"**
-
----
