@@ -35,16 +35,18 @@
 | CA-003 (scan e identificação DS18B20) | PASS | ROM `28FFE203B41605C2` registrada no boot |
 | CA-004 (leitura pelo endereço ROM) | PASS | Temperatura real ~29,4–30,1 °C |
 | CA-005 (dashboard em 192.168.4.1) | PASS | GET / → HTTP 200 |
-| CA-006 (gauge de temperatura) | PASS | Elemento `gauge` e função `drawGauge` encontrados via HTTP |
+| CA-006 (gauge de temperatura 20–40 °C) | PASS | Elemento `tempGauge` e escala 20–40 encontrados via HTTP |
 | CA-007 (atualização automática) | PASS (código) | JS com fetch periódico de 1 s |
-| CA-008 (gráfico de tendência) | PASS | Elemento `trend`, `drawTrend` e histórico de 60 pontos encontrados via HTTP |
-| CA-009 (endpoint JSON) | PASS | GET /api/values → JSON válido |
-| CA-010 (A0 entre 0 e 1023) | PASS | adc=460 |
-| CA-011 (falha do DS18B20) | PASS (código/scan) | modo degradado com HTTP ativo |
+| CA-008 (gráfico temperatura 20–40 °C) | PASS | Elemento `tempTrend` e escala 20–40 encontrados via HTTP |
+| CA-009 (gauge A0 0–1023) | PASS | Elemento `adcGauge` e escala 0–1023 encontrados via HTTP |
+| CA-010 (gráfico A0 0–1023) | PASS | Elemento `adcTrend` e escala 0–1023 encontrados via HTTP |
+| CA-011 (endpoint JSON) | PASS | GET /api/values → JSON válido |
+| CA-012 (A0 entre 0 e 1023) | PASS | adc=460 |
+| CA-013 (falha do DS18B20) | PASS (código/scan) | modo degradado com HTTP ativo |
 
 ## Desvios da especificação
 
-- Gauge e gráfico de tendência implementados no HTML embarcado e validados por smoke test HTTP; teste visual em navegador permanece recomendado.
+- Gauges e gráficos de tendência implementados no HTML embarcado e validados por smoke test HTTP; teste visual em navegador permanece recomendado.
 
 ## Riscos residuais
 
@@ -52,4 +54,4 @@
 - Pull-up do DS18B20 usado internamente; validar robustez com cabo longo.
 - Teste de watchdog/reset em BANCADA pendente.
 - CA-007 (atualização automática) validado por inspeção do código; recomendado teste visual em navegador.
-- CA-006 e CA-008 foram validados por smoke test HTTP; validação visual no navegador permanece recomendada.
+- CA-006, CA-008, CA-009 e CA-010 foram validados por smoke test HTTP; validação visual no navegador permanece recomendada.

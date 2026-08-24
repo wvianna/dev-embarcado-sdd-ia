@@ -15,7 +15,7 @@ main.cpp
   │   ├─ json_formatter (payload /api/values)
   │   └─ web_server (ESP8266WebServer, rotas / e /api/values)
     └─ web/
-      └─ dashboard_html (PROGMEM: numérico, gauge e tendência)
+      └─ dashboard_html (PROGMEM: numérico, dois gauges e duas tendências)
 ```
 
 ## Fluxo de dados
@@ -55,8 +55,10 @@ struct Sample {
 - **Servidor:** `ESP8266WebServer` (core) — simples, suficiente para 2 rotas.
 - **JSON:** `ArduinoJson` (StaticJsonDocument) — sem alocação dinâmica.
 - **Sensor:** `OneWire` + `DallasTemperature`; scan ROM no boot, seleção por família `0x28` e conversão síncrona por leitura (aceitável a 1 Hz).
-- **Dashboard:** HTML+JS em PROGMEM com `fetch('/api/values')` a cada 1 s, indicação numérica, gauge em °C e gráfico de tendência.
-- **Histórico:** manter no navegador uma janela limitada de pontos; descartar o ponto mais antigo ao atingir o limite.
+- **Dashboard:** HTML+JS em PROGMEM com `fetch('/api/values')` a cada 1 s, indicação numérica, gauge e tendência de temperatura, gauge e tendência de A0.
+- **Escalas:** temperatura fixa em 20–40 °C; A0 fixa em 0–1023.
+- **Histórico:** manter no navegador uma janela limitada de pontos por sinal; descartar o ponto mais antigo ao atingir o limite.
+- **Layout:** não exibir quadro separado de “Última atualização”; o timestamp permanece somente no payload JSON.
 - **Watchdog:** `ESP.wdtFeed()` no loop; `ESP.wdtDisable()` não utilizado.
 - **Clock:** 80 MHz (padrão).
 

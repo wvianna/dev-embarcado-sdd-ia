@@ -2,11 +2,11 @@
 
 ## Estado atual
 
-Firmware funcional e gravado no NodeMCU (ESP8266MOD). AP, servidor HTTP, DS18B20, ADC, gauge e gráfico de tendência implementados e validados por smoke test HTTP; validação visual permanece recomendada.
+Firmware funcional e gravado no NodeMCU (ESP8266MOD). AP, servidor HTTP, DS18B20, ADC, dois gauges e dois gráficos de tendência implementados e validados por smoke test HTTP; validação visual permanece recomendada.
 
 ## Objetivo restante
 
-- Validar visualmente gauge e gráfico de tendência no navegador (CA-006 e CA-008).
+- Validar visualmente gauges e gráficos de tendência no navegador (CA-006, CA-008, CA-009 e CA-010).
 - Validar comportamento visual do dashboard em navegador (atualização automática, CA-007).
 - Confirmar tensão/divisor do A0 (hardware).
 - Testar watchdog e reset em BANCADA.
@@ -40,7 +40,7 @@ Firmware funcional e gravado no NodeMCU (ESP8266MOD). AP, servidor HTTP, DS18B20
 ## Próximos passos
 
 1. Conectar navegador ao AP `ESP8266-101026` e abrir `http://192.168.4.1`.
-2. Verificar visualmente gauge e gráfico de tendência (CA-006 e CA-008).
+2. Verificar visualmente gauges e gráficos de tendência (CA-006, CA-008, CA-009 e CA-010).
 3. Verificar atualização automática do dashboard (CA-007).
 4. Medir tensão no A0 e ajustar TARGET/CONCERNS.
 5. Testar reset/watchdog.

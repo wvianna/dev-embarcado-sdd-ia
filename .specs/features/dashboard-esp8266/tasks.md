@@ -22,17 +22,17 @@
 
 ## T-003 Implementar dashboard numérico, gauge e tendência
 
-- Requisitos: FR-004, FR-005, FR-006, FR-010
+- Requisitos: FR-004, FR-005, FR-006, FR-007, FR-008, FR-012
 - Onde: `firmware/src/web/dashboard_html.h`
 - Depende de: T-002
 - Reutiliza: endpoint JSON
-- Feito quando: dashboard mostra números, gauge em °C e gráfico com janela limitada atualizado a 1 Hz
+- Feito quando: dashboard mostra números, gauge e tendência de temperatura (20–40 °C), gauge e tendência de A0 (0–1023), sem quadro de última atualização
 - Testes: inspeção no navegador + smoke HTTP
 - Gate: três visualizações presentes e sem crescimento indefinido do histórico
 
 ## T-004 Implementar driver ADC
 
-- Requisitos: FR-007, NFR-005
+- Requisitos: FR-009, NFR-005
 - Onde: `firmware/src/adc_driver.h/.cpp`
 - Depende de: T-001
 - Reutiliza: `analogRead()`
@@ -42,7 +42,7 @@
 
 ## T-005 Implementar sampler (amostra a 1 Hz)
 
-- Requisitos: FR-008, FR-009, NFR-001
+- Requisitos: FR-010, FR-011, NFR-001
 - Onde: `firmware/src/sampler.h/.cpp`
 - Depende de: T-002, T-004
 - Reutiliza: drivers
@@ -52,7 +52,7 @@
 
 ## T-006 Implementar formatação JSON
 
-- Requisitos: FR-011
+- Requisitos: FR-013
 - Onde: `firmware/lib/logic/json_formatter.h/.cpp`
 - Depende de: T-005
 - Reutiliza: ArduinoJson
@@ -62,7 +62,7 @@
 
 ## T-007 Implementar servidor HTTP e dashboard
 
-- Requisitos: FR-010, FR-011, FR-012, FR-013
+- Requisitos: FR-012, FR-013, FR-014, FR-015
 - Onde: `firmware/src/web_server.h/.cpp`, `firmware/src/web/dashboard_html.h`
 - Depende de: T-006
 - Reutiliza: ESP8266WebServer, ESP8266WiFi
@@ -82,7 +82,7 @@
 
 ## T-009 Validar em BANCADA
 
-- Requisitos: CA-001 a CA-011
+- Requisitos: CA-001 a CA-013
 - Onde: hardware físico
 - Depende de: T-008
 - Reutiliza: —
@@ -95,5 +95,5 @@
 - Arquivos esperados: `firmware/src/*`, `firmware/test/*`, `platformio.ini`, README.
 - Build alvo: `pio run -e nodemcuv2`.
 - Testes: `pio test -e native` (HOST).
-- Aceite rastreado: CA-001..CA-011.
+- Aceite rastreado: CA-001..CA-013.
 - Pendências: validação física de BANCADA (hardware), tensão do ADC, pull-up OneWire.
