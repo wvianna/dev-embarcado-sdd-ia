@@ -3,6 +3,7 @@
 Repositório de estudos, materiais didáticos e experimentos sobre desenvolvimento de software embarcado com apoio de IA e Software Specification-Driven Development (SDD).
 
 O material será usado nas disciplinas:
+
 - Produtos Intensivos de Software do SAEG;
 - Desenvolvimento de Software Embarcado Baseado em Especificação e Inteligência Artificial (optativa) da Engenharia de Controle e Automação (ECA) do Instituto Federal Fluminense (IFF).
   
@@ -57,7 +58,12 @@ Na apresentação principal ([apresentação/palestra_sdd_software_embarcado.md]
 - rede aberta com IP fixo do MCU em 192.168.4.1/24;
 - leitura de temperatura com DS18B20 em D2/GPIO4;
 - leitura analógica em A0 (0 a 1023);
-- dashboard web embarcado exibindo valores em tempo real.
+- dashboard web embarcado exibindo valores em tempo real;
+- indicação numérica, gauge de temperatura e gráfico de tendência histórica.
+
+O firmware atual já possui indicação numérica, scan OneWire, AP, HTTP e endpoint JSON. Gauge e gráfico de tendência estão especificados e permanecem como próxima tarefa de implementação em `.specs/features/dashboard-esp8266/tasks.md`.
+
+A implementação segue o processo SDD da skill em [firmware/](firmware/), com especificação/design/tarefas em `.specs/features/dashboard-esp8266/` e validação registrada em `SUMMARY.md`.
 
 ## Use a skill sdd-embarcado
 

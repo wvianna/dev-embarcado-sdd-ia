@@ -1437,11 +1437,17 @@ flowchart TD
 
 ### Requisitos funcionais
 
+- Executar, na inicialização, um scan do barramento OneWire em D2/GPIO4
+- Enumerar e registrar no log serial os endereços ROM encontrados
+- Identificar sensores DS18B20 pela família OneWire `0x28` e usar o endereço encontrado nas leituras
 - Ler o DS18B20 periodicamente e converter para graus Celsius
 - Ler A0 periodicamente e manter valor bruto (0 a 1023)
 - Expor endpoint JSON com os valores atuais (temperatura e A0)
-- Servir página web com dashboard simples e atualização automática
-- Exibir no dashboard: temperatura, valor de A0 e timestamp da última atualização
+- Servir página web com dashboard e atualização automática
+- Exibir a temperatura e o valor de A0 em indicação numérica
+- Exibir a temperatura em um gauge com escala e unidade em graus Celsius
+- Exibir gráfico de tendência com o histórico recente das leituras
+- Indicar ausência/falha do DS18B20 sem interromper o dashboard
 
 ### Requisitos de rede (modo AP)
 
@@ -1461,6 +1467,8 @@ flowchart TD
 - Ao conectar ao AP, o cliente deve receber IP da rede `192.168.4.0/24`
 - O endereço `http://192.168.4.1` deve abrir o dashboard
 - O dashboard deve atualizar automaticamente sem recarregar a página
+- O dashboard deve mostrar simultaneamente indicação numérica, gauge e gráfico de tendência
+- O gráfico deve receber novos pontos a cada ciclo de aquisição e manter uma janela histórica limitada
 - A leitura de A0 deve permanecer no intervalo `0..1023`
 - Em falha de leitura do DS18B20, o dashboard deve indicar erro de sensor sem travar a interface
 
@@ -1494,35 +1502,41 @@ Use a skill especializada para transformar intenção em execução com rastreab
 
 # 43. Da demanda para a especificação
 
-Exemplo de `spec.md`:
+Exemplo de `spec.md` para o laboratório:
 
 ```markdown
-# Leitura de temperatura
+# Dashboard web embarcado — ESP8266
 
 ## Objetivo
-Adquirir temperatura e transmitir o valor pela UART.
+Adquirir temperatura e sinal analógico e apresentar as leituras em um dashboard web servido pelo ESP8266.
 
-## FR-001
-O firmware deve adquirir temperatura a cada 1 s.
+## FR-001 — Scan OneWire
+Na inicialização, o firmware deve varrer o barramento OneWire em D2/GPIO4, registrar cada ROM encontrada e identificar a família `0x28` como DS18B20.
 
-## FR-002
-O valor deve ser transmitido pela UART após aquisição válida.
+## FR-002 — Endereço do sensor
+O firmware deve armazenar o endereço ROM do primeiro DS18B20 encontrado e utilizá-lo nas leituras posteriores.
 
-## NFR-001
-O período deve ser 1 s ± 10 ms.
+## FR-003 — Aquisição
+O firmware deve ler o DS18B20 e A0 a cada 1 s.
 
-## FR-003
-Uma leitura inválida deve gerar código de erro.
+## FR-004 — Dashboard
+O dashboard deve exibir valor numérico, gauge de temperatura e gráfico de tendência histórica.
+
+## FR-005 — Falha
+Se o sensor não for encontrado ou falhar, o dashboard deve indicar o erro e continuar exibindo A0.
+
+## NFR-001 — Rede
+O ESP8266 deve operar como AP aberto em `192.168.4.1/24`.
 
 ## Critérios de aceitação
 
-DADO o sistema em operação
-QUANDO ocorrer o período de aquisição
-ENTÃO uma leitura deve ser realizada.
+DADO o MCU iniciando
+QUANDO o scan OneWire terminar
+ENTÃO o endereço ROM do DS18B20 deve aparecer no log serial.
 
 DADO uma leitura válida
-QUANDO a aquisição terminar
-ENTÃO o valor deve ser transmitido.
+QUANDO o dashboard for atualizado
+ENTÃO os valores numéricos, o gauge e um novo ponto do gráfico devem ser apresentados.
 ```
 
 ---
