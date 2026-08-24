@@ -12,29 +12,105 @@ static const char DASHBOARD_HTML[] PROGMEM = R"rawliteral(
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dashboard ESP8266</title>
 <style>
-  :root { color-scheme: dark; }
-  body { font-family: system-ui, sans-serif; background: #0f172a; color: #e2e8f0;
-         margin: 0; display: flex; min-height: 100vh; align-items: center; justify-content: center; }
-  .card { background: #1e293b; border-radius: 16px; padding: 2rem; width: min(90vw, 420px);
-          box-shadow: 0 10px 30px rgba(0,0,0,.4); }
-  h1 { font-size: 1.2rem; margin: 0 0 1.2rem; color: #38bdf8; text-align: center; }
-  .row { display: flex; justify-content: space-between; padding: .7rem 0; border-bottom: 1px solid #334155; }
-  .row:last-child { border-bottom: none; }
-  .label { color: #94a3b8; }
-  .value { font-weight: 700; font-variant-numeric: tabular-nums; }
-  .value.err { color: #f87171; }
-  .meta { margin-top: 1rem; font-size: .78rem; color: #64748b; text-align: center; }
+  :root { color-scheme: dark; --bg: #0f172a; --panel: #1e293b; --line: #334155;
+          --text: #e2e8f0; --muted: #94a3b8; --cyan: #38bdf8; --green: #34d399; }
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text);
+         margin: 0; min-height: 100vh; padding: 1rem; }
+  main { margin: auto; width: min(100%, 760px); }
+  h1 { font-size: 1.25rem; margin: .2rem 0 1rem; color: var(--cyan); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+           padding: 1rem; box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+  .wide { grid-column: 1 / -1; }
+  .label { color: var(--muted); font-size: .82rem; }
+  .value { display: block; color: var(--green); font-size: 1.8rem; font-weight: 700;
+           font-variant-numeric: tabular-nums; margin-top: .25rem; }
+  .value.err { color: #f87171; font-size: 1.1rem; }
+  canvas { display: block; width: 100%; height: auto; }
+  .meta { margin-top: 1rem; font-size: .76rem; color: #64748b; text-align: center; }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } .wide { grid-column: auto; } }
 </style>
 </head>
 <body>
-  <div class="card">
+  <main>
     <h1>Dashboard ESP8266</h1>
-    <div class="row"><span class="label">Temperatura</span><span class="value" id="temp">—</span></div>
-    <div class="row"><span class="label">ADC (A0)</span><span class="value" id="adc">—</span></div>
-    <div class="row"><span class="label">Atualização</span><span class="value" id="ts">—</span></div>
+    <div class="grid">
+      <section class="panel"><span class="label">Temperatura</span><span class="value" id="temp">—</span></section>
+      <section class="panel"><span class="label">ADC (A0)</span><span class="value" id="adc">—</span></section>
+      <section class="panel wide"><span class="label">Gauge de temperatura (20–40 °C)</span><canvas id="tempGauge" width="700" height="180"></canvas></section>
+      <section class="panel wide"><span class="label">Tendência de temperatura (20–40 °C)</span><canvas id="tempTrend" width="700" height="240"></canvas></section>
+      <section class="panel wide"><span class="label">Gauge do sinal analógico (0–1023)</span><canvas id="adcGauge" width="700" height="180"></canvas></section>
+      <section class="panel wide"><span class="label">Tendência do sinal analógico (0–1023)</span><canvas id="adcTrend" width="700" height="240"></canvas></section>
+    </div>
     <div class="meta">Atualização automática a cada 1 s · 192.168.4.1</div>
-  </div>
+  </main>
 <script>
+const tempHistory = [];
+const adcHistory = [];
+const maxHistory = 60;
+
+function drawGauge(id, value, min, max, unit, error) {
+  const canvas = document.getElementById(id);
+  const ctx = canvas.getContext('2d');
+  const width = canvas.width;
+  const height = canvas.height;
+  const cx = width / 2;
+  const cy = height - 18;
+  const radius = Math.min(width * .34, height * .78);
+  const start = Math.PI;
+  const end = 2 * Math.PI;
+  ctx.clearRect(0, 0, width, height);
+  ctx.lineWidth = 20;
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = '#334155';
+  ctx.beginPath(); ctx.arc(cx, cy, radius, start, end); ctx.stroke();
+  if (!error) {
+    const ratio = Math.max(0, Math.min(1, (value - min) / (max - min)));
+    ctx.strokeStyle = '#34d399';
+    ctx.beginPath(); ctx.arc(cx, cy, radius, start, start + ratio * Math.PI); ctx.stroke();
+    ctx.fillStyle = '#e2e8f0';
+    ctx.font = 'bold 24px system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText(value.toFixed(unit === '°C' ? 1 : 0) + ' ' + unit, cx, cy - 22);
+  } else {
+    ctx.fillStyle = '#f87171';
+    ctx.font = 'bold 18px system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Erro de sensor', cx, cy - 22);
+  }
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = '12px system-ui';
+  ctx.textAlign = 'left'; ctx.fillText(min + ' ' + unit, cx - radius, height - 2);
+  ctx.textAlign = 'right'; ctx.fillText(max + ' ' + unit, cx + radius, height - 2);
+}
+
+function drawTrend(id, points, min, max, unit, color) {
+  const canvas = document.getElementById(id);
+  const ctx = canvas.getContext('2d');
+  const width = canvas.width;
+  const height = canvas.height;
+  const pad = 28;
+  ctx.clearRect(0, 0, width, height);
+  ctx.strokeStyle = '#334155';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(pad, pad); ctx.lineTo(pad, height - pad); ctx.lineTo(width - pad, height - pad); ctx.stroke();
+  if (points.length === 0) return;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  points.forEach((point, index) => {
+    const x = pad + (width - 2 * pad) * (index / Math.max(1, maxHistory - 1));
+    const y = height - pad - (height - 2 * pad) * ((point.value - min) / Math.max(.1, max - min));
+    if (index === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = '12px system-ui';
+  ctx.textAlign = 'left'; ctx.fillText(max + ' ' + unit, pad, pad - 8);
+  ctx.textAlign = 'left'; ctx.fillText(min + ' ' + unit, pad, height - 4);
+}
+
 async function refresh() {
   try {
     const r = await fetch('/api/values');
@@ -43,16 +119,30 @@ async function refresh() {
     if (d.sensor_error) {
       tempEl.textContent = 'Erro de sensor';
       tempEl.className = 'value err';
+      drawGauge('tempGauge', 0, 20, 40, '°C', true);
+      drawTrend('tempTrend', tempHistory, 20, 40, '°C', '#38bdf8');
     } else {
       tempEl.textContent = d.temperature.toFixed(1) + ' °C';
       tempEl.className = 'value';
+      tempHistory.push({ value: d.temperature, time: d.timestamp });
+      if (tempHistory.length > maxHistory) tempHistory.shift();
+      drawGauge('tempGauge', d.temperature, 20, 40, '°C', false);
+      drawTrend('tempTrend', tempHistory, 20, 40, '°C', '#38bdf8');
     }
     document.getElementById('adc').textContent = d.adc;
-    document.getElementById('ts').textContent = new Date(d.timestamp).toLocaleTimeString('pt-BR');
+    adcHistory.push({ value: d.adc, time: d.timestamp });
+    if (adcHistory.length > maxHistory) adcHistory.shift();
+    drawGauge('adcGauge', d.adc, 0, 1023, '', false);
+    drawTrend('adcTrend', adcHistory, 0, 1023, '', '#fbbf24');
   } catch (e) {
     document.getElementById('temp').textContent = 'offline';
+    drawGauge('tempGauge', 0, 20, 40, '°C', true);
   }
 }
+drawGauge('tempGauge', 0, 20, 40, '°C', true);
+drawGauge('adcGauge', 0, 0, 1023, '', false);
+drawTrend('tempTrend', tempHistory, 20, 40, '°C', '#38bdf8');
+drawTrend('adcTrend', adcHistory, 0, 1023, '', '#fbbf24');
 refresh();
 setInterval(refresh, 1000);
 </script>

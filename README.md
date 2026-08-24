@@ -61,7 +61,7 @@ Na apresentação principal ([apresentação/palestra_sdd_software_embarcado.md]
 - dashboard web embarcado exibindo valores em tempo real;
 - indicação numérica, gauge de temperatura e gráfico de tendência histórica.
 
-O firmware atual já possui indicação numérica, scan OneWire, AP, HTTP e endpoint JSON. Gauge e gráfico de tendência estão especificados e permanecem como próxima tarefa de implementação em `.specs/features/dashboard-esp8266/tasks.md`.
+O firmware possui indicação numérica, scan OneWire, AP, HTTP, endpoint JSON, gauge de temperatura e gráfico de tendência com histórico limitado a 60 pontos.
 
 A implementação segue o processo SDD da skill em [firmware/](firmware/), com especificação/design/tarefas em `.specs/features/dashboard-esp8266/` e validação registrada em `SUMMARY.md`.
 

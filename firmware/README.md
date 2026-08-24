@@ -1,6 +1,6 @@
 # Dashboard Web Embarcado — ESP8266 (firmware)
 
-Firmware para NodeMCU V2 (ESP8266MOD) que adquire temperatura (DS18B20 em D2/GPIO4) e sinal analógico (A0, 0–1023) a 1 Hz e apresenta um dashboard web servido pelo próprio MCU em modo Access Point. O escopo da próxima iteração inclui gauge de temperatura e gráfico de tendência com janela histórica limitada.
+Firmware para NodeMCU V2 (ESP8266MOD) que adquire temperatura (DS18B20 em D2/GPIO4) e sinal analógico (A0, 0–1023) a 1 Hz e apresenta um dashboard web servido pelo próprio MCU em modo Access Point, com indicação numérica, gauge e gráfico de tendência limitado a 60 pontos.
 
 ## Requisitos de hardware
 

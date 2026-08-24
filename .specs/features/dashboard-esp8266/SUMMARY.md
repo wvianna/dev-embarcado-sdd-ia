@@ -35,16 +35,16 @@
 | CA-003 (scan e identificação DS18B20) | PASS | ROM `28FFE203B41605C2` registrada no boot |
 | CA-004 (leitura pelo endereço ROM) | PASS | Temperatura real ~29,4–30,1 °C |
 | CA-005 (dashboard em 192.168.4.1) | PASS | GET / → HTTP 200 |
-| CA-006 (gauge de temperatura) | PENDENTE | Especificado; implementação do dashboard necessária |
+| CA-006 (gauge de temperatura) | PASS | Elemento `gauge` e função `drawGauge` encontrados via HTTP |
 | CA-007 (atualização automática) | PASS (código) | JS com fetch periódico de 1 s |
-| CA-008 (gráfico de tendência) | PENDENTE | Especificado; implementação da janela histórica necessária |
+| CA-008 (gráfico de tendência) | PASS | Elemento `trend`, `drawTrend` e histórico de 60 pontos encontrados via HTTP |
 | CA-009 (endpoint JSON) | PASS | GET /api/values → JSON válido |
 | CA-010 (A0 entre 0 e 1023) | PASS | adc=460 |
 | CA-011 (falha do DS18B20) | PASS (código/scan) | modo degradado com HTTP ativo |
 
 ## Desvios da especificação
 
-- Gauge e gráfico de tendência foram adicionados à especificação, mas ainda não estão implementados no HTML embarcado.
+- Gauge e gráfico de tendência implementados no HTML embarcado e validados por smoke test HTTP; teste visual em navegador permanece recomendado.
 
 ## Riscos residuais
 
@@ -52,4 +52,4 @@
 - Pull-up do DS18B20 usado internamente; validar robustez com cabo longo.
 - Teste de watchdog/reset em BANCADA pendente.
 - CA-007 (atualização automática) validado por inspeção do código; recomendado teste visual em navegador.
-- CA-006 e CA-008 dependem da implementação e validação visual do dashboard.
+- CA-006 e CA-008 foram validados por smoke test HTTP; validação visual no navegador permanece recomendada.

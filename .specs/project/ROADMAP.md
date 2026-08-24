@@ -16,7 +16,7 @@
 
 - [x] Projeto PlatformIO em `firmware/`.
 - [x] Firmware: AP, servidor HTTP, DS18B20 (com scan OneWire), A0, watchdog.
-- [ ] Dashboard HTML/JS embarcado com indicação numérica, gauge e gráfico de tendência.
+- [x] Dashboard HTML/JS embarcado com indicação numérica, gauge e gráfico de tendência.
 - [x] Endpoint JSON `/api/values`.
 
 ## Fase 4 — Verificação (parcialmente concluída)
@@ -24,7 +24,7 @@
 - [x] Testes HOST (lógica, JSON, faixas) — 5/5 PASS.
 - [x] Compilação para o alvo (PlatformIO build) — SUCCESS.
 - [x] Validação em BANCADA — AP, DHCP, HTTP e leituras OK.
-- [ ] Implementação e teste visual do gauge e gráfico de tendência.
+- [ ] Inspeção visual final do gauge e gráfico de tendência no navegador.
 - [ ] Medição da tensão do ADC (pendente).
 
 ## Fase 5 — Encerramento (em andamento)
