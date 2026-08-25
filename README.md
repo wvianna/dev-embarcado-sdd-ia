@@ -9,6 +9,8 @@ O material será usado nas disciplinas:
   
 O objetivo é mostrar como transformar necessidade de produto em comportamento verificável de firmware, mantendo rastreabilidade entre requisitos, design, implementação, testes e evidências.
 
+[![Repositório do projeto no GitHub](imagens/repositorio.png)](https://github.com/wvianna/dev-embarcado-sdd-ia)
+
 ## Estrutura do repositório
 
 - [SKILL/sdd-embarcado/](SKILL/sdd-embarcado/): skill para planejamento e implementação de firmware com SDD adaptativo.
