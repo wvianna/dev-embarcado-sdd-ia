@@ -194,7 +194,8 @@ Antes de finalizar, confirme:
 - todos os requisitos têm implementação ou justificativa explícita;
 - todos os critérios de aceite têm teste/evidência ou pendência registrada;
 - documentação e código não divergem;
-- `README.md` explica como configurar, compilar, testar e executar o estado atual do projeto;
+- `README.md` explica como configurar, compilar, testar e executar o estado atual do projeto. Sempre que possível inclua instruções de gravação, monitoramento, validação física e diagramas mermaid para ilustrar fluxo, máquina de estados e arquitetura;
+- `.gitignore`e `.gitattributes` estão corretos para o alvo e toolchain;
 - o código afetado compilou para o alvo, ou a impossibilidade está registrada em `HANDSOFF.md`;
 - limites de tempo, memória, energia e comunicação foram verificados quando aplicáveis;
 - comportamento de erro, reset e recuperação foi considerado;
