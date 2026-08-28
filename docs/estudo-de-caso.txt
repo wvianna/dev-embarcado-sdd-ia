@@ -3,7 +3,7 @@ Identidade do alvo
 - pinos usados:
   DS18B20: D2/GPIO4, barramento OneWire, temperatura em graus Celsius. falha do DS18B20 deve ser representada explicitamente do dashboard
   Buzzer: pino io16/D0
-  Resistência de aquecimento: pino D1/IO5 acionamento por PWM com valores de 0 a 1023;
+  Resistência de aquecimento: pino D1/IO5 acionamento por PWM com valores de 0 a 1023. onde 0 é desligado e 1023 é ligado. A resistência deve ser desligada em falha do sensor de temperatura ou quando a temperatura >= 80 oC
   
   Wi-Fi: modo Access Point, sem encriptação, SSID derivado do MAC (exemplo: `ESP8266-1A2B3C`), sub-rede `192.168.4.0/24`, IP fixo do MCU `192.168.4.1`, gateway `192.168.4.1` e máscara `255.255.255.0`
   DHCP do AP deve fornecer endereços aos clientes na sub-rede `192.168.4.0/24`
