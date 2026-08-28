@@ -1,0 +1,36 @@
+Identidade do alvo
+- nodemcu V2. ESP8266MOD. Limite de flash: 4MB
+- pinos usados:
+  DS18B20: D2/GPIO4, barramento OneWire, temperatura em graus Celsius. falha do DS18B20 deve ser representada explicitamente do dashboard
+  Buzzer: pino io16/D0
+  Resistência de aquecimento: pino D1/IO5 acionamento por PWM com valores de 0 a 1023;
+  
+  Wi-Fi: modo Access Point, sem encriptação, SSID derivado do MAC (exemplo: `ESP8266-1A2B3C`), sub-rede `192.168.4.0/24`, IP fixo do MCU `192.168.4.1`, gateway `192.168.4.1` e máscara `255.255.255.0`
+  DHCP do AP deve fornecer endereços aos clientes na sub-rede `192.168.4.0/24`
+  HTTP deve servir o dashboard em `http://192.168.4.1` e fornecer endpoint JSON para os valores atuais.
+  scan onewire ds18b20
+  
+- compilação via Platformio
+- usar Arduino Core para ESP8266
+- leitura do sensor de temperatura em intervalos de 1 segundo com variação aceitável de +- 150 mS
+- não é necessário usar interrupção ou timer
+- implementar o código de forma não bloqueante
+- não haverá persistência de dados
+
+segurança
+- deve alarmar o buzzer quando a temperatura >= 80 oC
+- forma de acionamento do buzzer: alarme um acionamento de 150 mS e intervalo deligado de 2S na condição da temperatura conforme descrito. Ciclo se repete enquanto a tempertura >= 80 oC
+- com temperatura >= 80 oC a resistência deve ser desligada
+- desligar a resistência em falha do sensor de temperatura
+
+interfce web
+- responsiva
+- layout de forma a evitar a rolagem no desktop
+- usar tema claro
+- indicação numérica, gráfica (gauge) e gráfico de tendência da temperatura com range de 20 a 90 oC. Apresentar escala do lado esquerdo e uma grade cinza claro no fundo.s
+- botão de liga e desliga o resistência de aquecimento
+- indicação do estado da resistência de aquecimento (ligada/deligada)
+- controle e elementos gráficos com hint de ajuda rápida para o usuário
+- criar no cabeçalho indicações da "saúde" do mcu com: carga, idle, uso da ram, uso da flash, etc. 
+
+
