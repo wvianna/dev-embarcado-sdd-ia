@@ -55,7 +55,7 @@ Para um projeto novo ou brownfield, use esta topologia mínima:
 
 Use `./references/constitution.md` como ponto de partida para `.specs/project/constitution.md`. Não copie a constituição para cada feature.
 
-Todo recurso concluído deve deixar quatro resultados verificáveis, mesmo quando forem curtos: código compilável, testes executados, documentação atualizada e um registro de entrega. Em projetos existentes, mantenha `README.md` como porta de entrada para configurar, compilar, testar e executar o firmware; não crie uma segunda documentação concorrente.
+Todo recurso concluído deve deixar quatro resultados verificáveis, mesmo quando forem curtos: código compilável, testes executados, documentação atualizada e um registro de entrega. Em projetos existentes, mantenha `README.md` como porta de entrada para configurar, compilar, testar e executar o firmware; não crie uma segunda documentação concorrente. Inclua no `README.md` uma seção de licença com a **Apache License 2.0** como padrão, contendo `Copyright <ano> <autor>` e o aviso oficial da licença com o link `http://www.apache.org/licenses/LICENSE-2.0`.
 
 ## Dimensionamento adaptativo
 
@@ -215,6 +215,7 @@ Antes de finalizar, confirme:
 - todos os critérios de aceite têm teste/evidência ou pendência registrada;
 - documentação e código não divergem;
 - `README.md` explica como configurar, compilar, testar e executar o estado atual do projeto. Sempre que possível inclua instruções de gravação, monitoramento, validação física e diagramas mermaid para ilustrar fluxo, máquina de estados e arquitetura;
+- `README.md` declara a licença do projeto (Apache License 2.0, com `Copyright <ano> <autor>` e o link oficial `http://www.apache.org/licenses/LICENSE-2.0`);
 - `.gitignore`e `.gitattributes` estão corretos para o alvo e toolchain;
 - o código afetado compilou para o alvo, ou a impossibilidade está registrada em `HANDSOFF.md`;
 - limites de tempo, memória, energia e comunicação foram verificados quando aplicáveis;

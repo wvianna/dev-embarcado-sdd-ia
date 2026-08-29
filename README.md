@@ -67,9 +67,7 @@ O firmware possui indicação numérica, scan OneWire, AP, HTTP, endpoint JSON, 
 
 ### Exemplo visual do estudo de caso
 
-![Dashboard web embarcado](imagens/dashboard-web.png)
-
-Esta imagem é um exemplo do estudo de caso implementado com a skill [sdd-embarcado](SKILL/sdd-embarcado/SKILL.md) e orientado pela especificação da feature em [.specs/features/dashboard-esp8266/](.specs/features/dashboard-esp8266/). Ela ilustra a interface web executada no ESP8266 para visualizar as leituras do DS18B20 e do sinal analógico.
+O estudo de caso foi implementado com a skill [sdd-embarcado](SKILL/sdd-embarcado/SKILL.md) e orientado pela especificação da feature em [.specs/features/dashboard-esp8266/](.specs/features/dashboard-esp8266/). Ele ilustra a interface web executada no ESP8266 para visualizar as leituras do DS18B20 e do sinal analógico.
 
 A implementação segue o processo SDD da skill em [firmware/](firmware/), com especificação/design/tarefas em `.specs/features/dashboard-esp8266/` e validação registrada em `SUMMARY.md`.
 
