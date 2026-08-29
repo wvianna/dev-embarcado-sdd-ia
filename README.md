@@ -53,7 +53,7 @@ Em resumo: a Specification define o contrato; Architecture organiza o sistema; P
 
 ## Demonstração prática da palestra
 
-Na apresentação principal ([apresentação/palestra_sdd_software_embarcado.md](apresentação/palestra_sdd_software_embarcado.md)), o conteúdo inclui fundamentos de LLM, harness, SDD adaptativo, artefatos, MCU, hardware, RTOS, rastreabilidade e uma demonstração prática com:
+Na apresentação principal ([sdd_software_embarcado.md](https://github.com/wvianna/dev-embarcado-sdd-ia/blob/main/apresentacao/sdd_software_embarcado.md)), o conteúdo inclui fundamentos de LLM, harness, SDD adaptativo, artefatos, MCU, hardware, RTOS, rastreabilidade e uma demonstração prática com:
 
 - ESP8266 em modo AP;
 - SSID baseado no MAC;
