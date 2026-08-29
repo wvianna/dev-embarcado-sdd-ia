@@ -14,7 +14,7 @@ O objetivo é mostrar como transformar necessidade de produto em comportamento v
 ## Estrutura do repositório
 
 - [SKILL/sdd-embarcado/](SKILL/sdd-embarcado/): skill para planejamento e implementação de firmware com SDD adaptativo.
-- [apresentação/](apresentação/): materiais da palestra e conteúdo introdutório (LLM, SDD, fluxo prático no VS Code).
+- [apresentação/](apresentacao/): materiais da palestra e conteúdo introdutório (LLM, SDD, fluxo prático no VS Code).
 - [docs/](docs/): notas e referências sobre ferramentas e abordagens (Spec Kit, Tessl e artefatos de SDD).
 - [material-terceiros/](material-terceiros/): materiais de apoio externos.
 - [ementa-objetivos-conteúdo/](ementa-objetivos-conte%C3%BAdo/): conteúdo programático, bibliografia e ementa da disciplina.
