@@ -20,6 +20,7 @@ Use esta skill para conduzir desenvolvimento orientado a especificações em mic
 7. **Toda tarefa termina com evidência.** Teste unitário, análise estática, build, simulação, teste de bancada ou HIL devem ser escolhidos de acordo com o risco.
 8. **Nunca declare hardware validado por teste apenas em host.** Diferencie claramente `HOST`, `SIMULADOR`, `BANCADA` e `HIL`.
 9. **Pequenas iterações preservam controle.** Atualize a especificação quando o comportamento real ou uma decisão aprovada mudar.
+10. **Declare contratos de concorrência antes de implementar.** Identifique toda variável compartilhada entre ISR, DMA e contexto de tarefa/loop principal. Especifique `volatile`, operações atômicas, seções críticas, barreiras de memória e ownership de periférico; nunca assuma que uma leitura-modificação-escrita de registrador de hardware é segura sem verificar acesso concorrente.
 
 ## Artefatos
 
@@ -67,7 +68,7 @@ Antes de criar documentos, classifique a mudança:
 | **Grande** | Vários módulos, ISR/RTOS, protocolo, persistência, consumo, boot ou integração de hardware | `spec.md` com IDs → `design.md` → `tasks.md` → executar por tarefa |
 | **Complexo** | Requisitos incertos, risco de segurança, timing crítico, nova placa/MCU, falha difícil de reproduzir | especificar → discutir lacunas → pesquisar → projetar → tarefas → implementar → validação incremental/HIL |
 
-Eleve o nível se qualquer mudança aparentemente pequena afetar segurança, limites elétricos, dados persistentes, atualização de firmware, sincronização concorrente ou comportamento após reset.
+Eleve o nível se qualquer mudança aparentemente pequena afetar segurança, limites elétricos, dados persistentes, atualização de firmware, sincronização concorrente, ISR, DMA, clock tree, linker script ou comportamento após reset.
 
 **Regra de segurança:** se uma lista de tarefas implícita passar de cinco itens ou revelar dependências, pare e crie `design.md` e `tasks.md` antes de continuar.
 
@@ -78,7 +79,7 @@ Eleve o nível se qualquer mudança aparentemente pequena afetar segurança, lim
 Em código existente, leia somente o necessário para localizar o caminho controlador e consulte, conforme o caso:
 
 - `PROJECT.md`, `STATE.md` e `constitution.md`;
-- `TARGET.md`: MCU, placa, clock, alimentação, pinos, periféricos, toolchain, SDK e RTOS;
+- `TARGET.md`: família e revisão de silício, placa, tensão de alimentação; clock tree (fontes, PLL, divisores, frequências dos periféricos); mapa de pinos e funções alternativas; tabela de interrupções com prioridades e níveis de aninhamento; canais DMA com ownership e regiões de memória acessíveis; regiões de memória (ROM, RAM, DTCM/ITCM, CCM) e tamanhos configurados no linker script; instâncias de periféricos utilizadas; toolchain, SDK, RTOS e versões; modo de boot, fuse bits e opções de gravação relevantes;
 - `TESTING.md` e `CONCERNS.md`;
 - driver, HAL/BSP, task/thread, ISR, máquina de estados e testes vizinhos.
 
@@ -98,7 +99,19 @@ Crie `spec.md` ou `TASK.md` com:
 
 Cada requisito deve ser observável e testável. Evite frases como “rápido”, “robusto” ou “baixo consumo” sem métrica, condição e método de medição.
 
-Para interfaces de hardware, registre unidade, escala, faixa, resolução, polaridade, debounce, tolerância, tempo de estabilização e comportamento fora da faixa. Para comunicação, registre framing, endianess, baud rate, timeout, CRC, versionamento, retries, perda de conexão e compatibilidade.
+Para interfaces de hardware, registre unidade, escala, faixa, resolução, polaridade, debounce, tolerância, tempo de estabilização e comportamento fora da faixa. Para comunicação, registre framing, endianess, baud rate, timeout, CRC, versionamento, retries, perda de conexão e compatibilidade. Para ISR e DMA, registre vetor, prioridade, contexto de execução, tempo máximo de serviço, variáveis compartilhadas e qualificadores necessários.
+
+Use uma tabela de interface para cada periférico significativo:
+
+| Campo | Valor |
+|---|---|
+| Periférico / instância | ex.: `I2C1`, `ADC3_CH7`, `TIM2_CH1` |
+| Pino(s) e função | ex.: `PB8 (SCL)`, `PB9 (SDA)` |
+| Protocolo / modo | ex.: I2C 400 kHz Fast-mode, pullup externo 4,7 kΩ |
+| Faixa / resolução | ex.: 0–3,3 V, 12 bits, Vref = 3,3 V |
+| Taxa / período / temporização | ex.: 1 leitura/s ± 150 ms |
+| ISR / DMA | ex.: `DMA2_Stream0_IRQn`, prioridade 5, buffer 64 bytes |
+| Falha / fora da faixa | ex.: timeout > 100 ms → usar último valor válido, sinalizar flag de erro |
 
 ### 3. Discutir ambiguidades
 
@@ -110,7 +123,11 @@ Pergunte ao usuário somente decisões que mudem comportamento, risco, custo ou 
 - persistência e desgaste de flash/EEPROM;
 - origem da verdade para calibração e parâmetros;
 - tolerância a dados ausentes ou sensores desconectados;
-- exigência de teste físico, simulador ou HIL.
+- exigência de teste físico, simulador ou HIL;
+- ownership exclusivo de periféricos e política de acesso concorrente;
+- ownership e tempo de vida de buffers DMA (quem aloca, quem libera, quando são válidos);
+- política de aninhamento de interrupções e prioridades máximas;
+- sequência de inicialização e dependências entre periféricos.
 
 Registre respostas em `context.md` e reflita-as na especificação. Se a resposta não vier, deixe a decisão como bloqueio explícito; não fabrique uma escolha.
 
@@ -126,6 +143,9 @@ Em `design.md`, mantenha o design proporcional e registre:
 - tratamento de reset, watchdog, brownout e recuperação;
 - interfaces HAL/BSP e dependências do SDK/RTOS;
 - impacto em energia, EMI, atualização e compatibilidade;
+- variáveis compartilhadas com ISR ou DMA: qualificador `volatile`, operações atômicas, seção crítica e barreiras de memória;
+- registradores de hardware: nunca leia-modifique-escreva sem verificar acesso concorrente e bits de status relevantes;
+- ADRs inline para decisões de impacto arquitetural: `ADR-###: título | contexto | decisão | consequências`;
 - alternativas rejeitadas e motivo.
 
 Qualquer decisão que não seja puramente funcional deve estar neste documento ou em `STATE.md`, nunca escondida em uma tarefa vaga.
@@ -178,7 +198,7 @@ Escolha a evidência mínima suficiente e aumente-a conforme o risco:
 
 - **Host:** testes unitários de lógica pura, parser, cálculo e máquina de estados;
 - **Build:** compilação para o alvo, warnings tratados conforme a constituição, tamanho de flash/RAM e artefato gerado identificado;
-- **Estático:** formatter, linter, análise estática e checagem de concorrência quando disponíveis;
+- **Estático:** formatter, linter, análise estática (`cppcheck`, `clang-tidy`), checagem de concorrência; quando aplicável, conformidade MISRA-C/MISRA-C++ e análise de uso de stack pelo mapa de linker (`-fstack-usage`) ou ferramenta dedicada;
 - **Simulador:** periféricos e temporização modelados;
 - **Bancada:** pinos, níveis, sensores, atuadores, reset, watchdog e consumo;
 - **HIL:** integração com hardware real, timing, comunicação e cenários de falha.
@@ -204,6 +224,8 @@ Antes de finalizar, confirme:
 - a especificação continua útil para a próxima manutenção do recurso.
 
 ## Formato rápido
+
+### Bug ou correção local
 
 Para um bug pequeno, escreva apenas:
 
@@ -242,6 +264,52 @@ Para um bug pequeno, escreva apenas:
 ## Critérios de aceite
 - [ ] CA-001: ...
 - [ ] CA-002: ...
+```
+
+### Novo driver ou periférico
+
+```markdown
+# TASK: <driver: nome do periférico ou interface>
+
+## Objetivo e periférico
+- alvo/instância:
+- pinos e funções alternativas:
+- protocolo, modo e temporização:
+
+## Interface pública (API)
+- funções, callbacks ou tipos principais
+
+## Comportamento esperado
+- estados e transições:
+- eventos disparadores:
+- saídas e efeitos observáveis:
+
+## Escopo e restrições embarcadas
+- ISR/DMA (vetor, prioridade, contexto de execução):
+- volatile/atômico/seção crítica:
+- memória (RAM, stack, buffers DMA):
+- energia/clock gate:
+- comportamento na falha de hardware:
+
+## Critérios de aceitação
+- [ ] DADO ... QUANDO ... ENTÃO ...
+
+## Plano atômico
+1. ...
+
+## Verificação
+- Gate:
+- Compilação do alvo:
+- Testes executados:
+- Nível: HOST | SIMULADOR | BANCADA | HIL
+- Evidência esperada:
+
+## Entregáveis
+- [ ] Driver implementado (HAL separado de lógica de aplicação)
+- [ ] Testes unitários do driver
+- [ ] Tabela de interface preenchida em `spec.md`
+- [ ] `README.md` atualizado se necessário
+- [ ] `SUMMARY.md` com resultados
 ```
 
 ## Saída esperada da skill
