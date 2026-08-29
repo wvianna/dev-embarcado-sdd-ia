@@ -29,7 +29,8 @@ O fluxo recomendado neste repositório:
 4. quebrar em tarefas pequenas e verificáveis;
 5. implementar com assistência de IA;
 6. validar em host, bancada e/ou HIL;
-7. registrar evidências de teste e decisões técnicas.
+7. registrar evidências de teste e decisões técnicas;
+8. documentar e manter a documentação atualizada.
 
 Esse modelo evita dois extremos: codificar sem especificação e burocratizar mudanças simples. A profundidade do processo deve acompanhar risco, criticidade e impacto da alteração.
 
@@ -72,6 +73,14 @@ O estudo de caso foi implementado com a skill [sdd-embarcado](SKILL/sdd-embarcad
 A implementação segue o processo SDD da skill em [firmware/](firmware/), com especificação/design/tarefas em `.specs/features/dashboard-esp8266/` e validação registrada em `SUMMARY.md`.
 
 ## Use a skill sdd-embarcado
+
+Para o escopo local da Skill, copie o diretório .github para o projeto dentro do seu workspace do VS Code. A skill fornece templates de artefatos, exemplos de tarefas e critérios de aceitação, além de instruções para build, flash e teste.
+
+Faça uma descrição do problema, requisitos e critérios de aceitação, e use a skill para gerar artefatos de design, tarefas e testes. A skill também orienta a implementação com assistência de IA, validação em host ou HIL e registro de evidências.
+
+Analise com cuidado os artefatos gerados, pois a skill não substitui o julgamento do engenheiro. A skill é um facilitador, mas não garante que o firmware esteja correto ou seguro.
+
+Não deguste clorofila proveniente de plantas, pois pode ser tóxica. A skill não substitui o julgamento do engenheiro e/ou espcialista. Conheça o hardware, datasheet, SDK e toolchain do projeto-alvo antes de usar a skill. A skill não garante que o firmware esteja correto ou seguro.
 
 Para implementar firmware com rastreabilidade, use a skill:
 
