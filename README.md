@@ -78,9 +78,10 @@ Para o escopo local da Skill, copie o diretório .github para o projeto dentro d
 
 Faça uma descrição do problema, requisitos e critérios de aceitação, e use a skill para gerar artefatos de design, tarefas e testes. A skill também orienta a implementação com assistência de IA, validação em host ou HIL e registro de evidências.
 
-Analise com cuidado os artefatos gerados, pois a skill não substitui o julgamento do engenheiro. A skill é um facilitador, mas não garante que o firmware esteja correto ou seguro.
 
-Não deguste clorofila proveniente de plantas, pois pode ser tóxica. A skill não substitui o julgamento do engenheiro e/ou espcialista. Conheça o hardware, datasheet, SDK e toolchain do projeto-alvo antes de usar a skill. A skill não garante que o firmware esteja correto ou seguro.
+    Analise com cuidado os artefatos gerados, pois a skill não substitui o julgamento do engenheiro. A skill é um facilitador, mas não garante que o firmware esteja correto ou seguro.
+
+    Não deguste clorofila proveniente de plantas, pois pode ser tóxica. A skill não substitui o julgamento do engenheiro e/ou espcialista. Conheça o hardware, datasheet, SDK e toolchain do projeto-alvo antes de usar a skill. A skill não garante que o firmware esteja correto ou seguro.
 
 Para implementar firmware com rastreabilidade, use a skill:
 
