@@ -66,15 +66,17 @@ Na apresentação principal ([sdd_software_embarcado.md](https://github.com/wvia
 
 O firmware possui indicação numérica, scan OneWire, AP, HTTP, endpoint JSON, gauge e gráfico de tendência da temperatura (20–40 °C) e do ADC (0–1023), ambos com histórico limitado a 60 pontos. Os gauges ficam lado a lado, assim como os gráficos, e o timestamp permanece no JSON sem quadro separado.
 
-### Exemplo do estudo de caso
+### Estudos de caso
 
-O estudo de caso foi implementado com a skill [sdd-embarcado](SKILL/sdd-embarcado/SKILL.md) e orientado pela especificação da feature em [.specs/features/dashboard-esp8266/](.specs/features/dashboard-esp8266/). Ele ilustra a interface web executada no ESP8266 para visualizar as leituras do DS18B20 e do sinal analógico.
+Os estudos de caso abaixo aplicam a mesma abordagem SDD da skill [sdd-embarcado](SKILL/sdd-embarcado/SKILL.md), com especificação, design, planejamento, implementação, testes e documentação em um fluxo rastreável.
 
-O repositório do projeto implementado com a skill está disponível em: [demonstracao-dashboarweb-termico](https://github.com/wvianna/demonstracao-dashboarweb-termico).
+- **DeepSeek V4 Flash** na especificação e implementação do dashboard web embarcado em ESP8266: [demonstracao-dashboarweb-termico](https://github.com/wvianna/demonstracao-dashboarweb-termico).
+- **Claude Sonnet 5** na especificação e implementação: [dev-embarcado-sdd-ia-sonnet-5](https://github.com/wvianna/dev-embarcado-sdd-ia-sonnet-5).
+- **Copilot Auto** (roteamento do modelo) na especificação e implementação: [dev-embarcado-sdd-ia-copilot-auto](https://github.com/wvianna/dev-embarcado-sdd-ia-copilot-auto).
 
-Em **todo o processo** (especificação, design, planejamento de tarefas, implementação do firmware, testes e documentação) foi utilizado o **DeepSeek V4 Flash** como modelo de IA de apoio.
+Em **todo o processo** (especificação, design, planejamento de tarefas, implementação do firmware, testes e documentação), cada estudo foi conduzido com o modelo de IA indicado acima.
 
-A implementação segue o processo SDD da skill em [firmware/](firmware/), com especificação/design/tarefas em `.specs/features/dashboard-esp8266/` e validação registrada em `SUMMARY.md`.
+A implementação principal segue o processo SDD da skill em [firmware/](firmware/), com especificação/design/tarefas em `.specs/features/dashboard-esp8266/` e validação registrada em `SUMMARY.md`.
 
 
 
