@@ -73,6 +73,9 @@ Os estudos de caso abaixo aplicam a mesma abordagem SDD da skill [sdd-embarcado]
 - **DeepSeek V4 Flash** na especificação e implementação do dashboard web embarcado em ESP8266: [demonstracao-dashboarweb-termico](https://github.com/wvianna/demonstracao-dashboarweb-termico).
 - **Claude Sonnet 5** na especificação e implementação: [dev-embarcado-sdd-ia-sonnet-5](https://github.com/wvianna/dev-embarcado-sdd-ia-sonnet-5).
 - **Copilot Auto** (roteamento do modelo) na especificação e implementação: [dev-embarcado-sdd-ia-copilot-auto](https://github.com/wvianna/dev-embarcado-sdd-ia-copilot-auto).
+- **Qwen 3.8 2.4T + Deepseek V4 Flash Vision** (roteamento do modelo) na especificação e implementação: [dev-embarcado-sdd-ia-qwen3.8-2.4T-DeepseekV4-flash-vison](https://github.com/wvianna/dev-embarcado-sdd-ia-qwen3.8-2.4T-DeepseekV4-flash-vison).
+
+
 
 Em **todo o processo** (especificação, design, planejamento de tarefas, implementação do firmware, testes e documentação), cada estudo foi conduzido com o modelo de IA indicado acima.
 
