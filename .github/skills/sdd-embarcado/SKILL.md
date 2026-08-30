@@ -55,7 +55,9 @@ Para um projeto novo ou brownfield, use esta topologia mínima:
 
 Use `./references/constitution.md` como ponto de partida para `.specs/project/constitution.md`. Não copie a constituição para cada feature.
 
-Todo recurso concluído deve deixar quatro resultados verificáveis, mesmo quando forem curtos: código compilável, testes executados, documentação atualizada e um registro de entrega. Em projetos existentes, mantenha `README.md` como porta de entrada para configurar, compilar, testar e executar o firmware; não crie uma segunda documentação concorrente. Inclua no `README.md` uma seção de licença com a **Apache License 2.0** como padrão, contendo `Copyright <ano> <autor>` e o aviso oficial da licença com o link `http://www.apache.org/licenses/LICENSE-2.0`.
+**Anti-bloat:** crie apenas os arquivos com conteúdo real; nunca crie placeholders vazios. Em projetos pequenos ou de um único firmware, consolide os documentos de `codebase/` em um único `CODEBASE.md` e registre isso em `STATE.md`. Eleve a topologia completa somente quando o projeto crescer.
+
+Todo recurso concluído deve deixar quatro resultados verificáveis, mesmo quando forem curtos: código compilável, testes executados, documentação atualizada e um registro de entrega. Em projetos existentes, mantenha `README.md` como porta de entrada para configurar, compilar, testar e executar o firmware; não crie uma segunda documentação concorrente. Inclua no `README.md` uma seção de licença; salvo decisão registrada em contrário, use a **Apache License 2.0** como padrão, contendo `Copyright <ano> <autor>` e o aviso oficial da licença com o link `http://www.apache.org/licenses/LICENSE-2.0`.
 
 ## Dimensionamento adaptativo
 
@@ -76,7 +78,7 @@ Eleve o nível se qualquer mudança aparentemente pequena afetar segurança, lim
 
 ### 1. Reconhecer o contexto
 
-Em código existente, leia somente o necessário para localizar o caminho controlador e consulte, conforme o caso:
+Em trabalho contínuo, comece por `STATE.md` e `HANDSOFF.md` para retomar decisões, bloqueios e próximos passos sem refazer trabalho já validado. Em código existente, leia somente o necessário para localizar o caminho controlador e consulte, conforme o caso:
 
 - `PROJECT.md`, `STATE.md` e `constitution.md`;
 - `TARGET.md`: família e revisão de silício, placa, tensão de alimentação; clock tree (fontes, PLL, divisores, frequências dos periféricos); mapa de pinos e funções alternativas; tabela de interrupções com prioridades e níveis de aninhamento; canais DMA com ownership e regiões de memória acessíveis; regiões de memória (ROM, RAM, DTCM/ITCM, CCM) e tamanhos configurados no linker script; instâncias de periféricos utilizadas; toolchain, SDK, RTOS e versões; modo de boot, fuse bits e opções de gravação relevantes;
@@ -92,7 +94,7 @@ Crie `spec.md` ou `TASK.md` com:
 - objetivo e fora de escopo;
 - atores, estados e eventos;
 - requisitos numerados `FR-###` para comportamento funcional;
-- requisitos `NFR-###` para latência, frequência, jitter, memória, energia, disponibilidade, segurança e diagnóstico;
+- requisitos `NFR-###` para latência (incluindo WCET e latência de interrupção quando houver caminho de tempo real), frequência, jitter, memória (flash, RAM e stack), energia, disponibilidade, segurança, integridade de persistência e diagnóstico;
 - critérios de aceitação no formato `DADO / QUANDO / ENTÃO`, incluindo casos de erro;
 - matriz de rastreabilidade requisito → teste → evidência;
 - premissas, riscos e perguntas bloqueadoras.
@@ -115,7 +117,7 @@ Use uma tabela de interface para cada periférico significativo:
 
 ### 3. Discutir ambiguidades
 
-Pergunte ao usuário somente decisões que mudem comportamento, risco, custo ou arquitetura. Exemplos:
+Pergunte ao usuário somente decisões que mudem comportamento, risco, custo ou arquitetura, e agrupe todas as perguntas bloqueadoras em uma única interação em vez de perguntar uma a uma. Exemplos:
 
 - estado seguro após falha ou reset;
 - prioridade entre latência, consumo e precisão;
@@ -136,6 +138,7 @@ Registre respostas em `context.md` e reflita-as na especificação. Se a respost
 Em `design.md`, mantenha o design proporcional e registre:
 
 - módulos reutilizados e novos pontos de integração;
+- costuras de teste: lógica pura (FSM, parsers, cálculos) separada de registradores/HAL para teste em host, com injeção de dependências ou stubs de hardware;
 - fluxo de dados e máquina de estados;
 - ownership de buffers, filas, locks e acesso a periféricos;
 - contexto de execução: loop principal, ISR, task/thread e prioridades;
@@ -215,8 +218,8 @@ Antes de finalizar, confirme:
 - todos os critérios de aceite têm teste/evidência ou pendência registrada;
 - documentação e código não divergem;
 - `README.md` explica como configurar, compilar, testar e executar o estado atual do projeto. Sempre que possível inclua instruções de gravação, monitoramento, validação física e diagramas mermaid para ilustrar fluxo, máquina de estados e arquitetura;
-- `README.md` declara a licença do projeto (Apache License 2.0, com `Copyright <ano> <autor>` e o link oficial `http://www.apache.org/licenses/LICENSE-2.0`);
-- `.gitignore`e `.gitattributes` estão corretos para o alvo e toolchain;
+- `README.md` declara a licença do projeto (padrão Apache License 2.0, com `Copyright <ano> <autor>` e o link oficial `http://www.apache.org/licenses/LICENSE-2.0`, salvo decisão registrada em contrário);
+- `.gitignore` e `.gitattributes` estão corretos para o alvo e toolchain;
 - o código afetado compilou para o alvo, ou a impossibilidade está registrada em `HANDSOFF.md`;
 - limites de tempo, memória, energia e comunicação foram verificados quando aplicáveis;
 - comportamento de erro, reset e recuperação foi considerado;
@@ -243,7 +246,8 @@ Para um bug pequeno, escreva apenas:
 - memória/energia:
 
 ## Critérios de aceitação
-- [ ] DADO ... QUANDO ... ENTÃO ...
+- [ ] CA-001: DADO ... QUANDO ... ENTÃO ...
+- [ ] CA-002: ... (inclua casos de erro, falha e reset)
 
 ## Plano atômico
 1. ...
@@ -261,10 +265,6 @@ Para um bug pequeno, escreva apenas:
 - [ ] `README.md` atualizado, quando instalação, compilação, teste ou execução mudarem
 - [ ] `SUMMARY.md` com resultados
 - [ ] `HANDSOFF.md` criado ou atualizado se houver continuidade
-
-## Critérios de aceite
-- [ ] CA-001: ...
-- [ ] CA-002: ...
 ```
 
 ### Novo driver ou periférico
@@ -293,7 +293,8 @@ Para um bug pequeno, escreva apenas:
 - comportamento na falha de hardware:
 
 ## Critérios de aceitação
-- [ ] DADO ... QUANDO ... ENTÃO ...
+- [ ] CA-001: DADO ... QUANDO ... ENTÃO ...
+- [ ] CA-002: ... (inclua casos de erro, falha e reset)
 
 ## Plano atômico
 1. ...
