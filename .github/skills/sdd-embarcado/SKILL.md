@@ -24,15 +24,25 @@ Use esta skill para conduzir desenvolvimento orientado a especificações em mic
 
 ## Artefatos
 
-Para um projeto novo ou brownfield, use esta topologia mínima:
+Todo projeto mantém, na raiz do workspace, os arquivos de continuidade entre agentes:
+
+- `README.md` — obrigatório. Apresentação e orientação geral: objetivo, descrição da aplicação, tecnologias, requisitos, como executar, estrutura de diretórios e o que um novo desenvolvedor precisa para iniciar. Conteúdo relativamente estável.
+- `AGENTS.md` — obrigatório. Regras permanentes do projeto: regras de desenvolvimento, arquitetura e padrões obrigatórios, convenções de código, tecnologias e versões, comandos importantes, restrições, procedimentos de teste e critérios para alteração de arquivos. Todo agente deve ler `AGENTS.md` antes de modificar o código.
+- `STATUS.md` — obrigatório. Estado atual do desenvolvimento: concluído, em andamento, pendente, problemas e erros conhecidos, testes realizados e pendentes, última alteração relevante e próximo passo recomendado. Atualizado a cada alteração significativa.
+- `HANDOFF.md` — obrigatório. Transferência de trabalho entre agentes: contexto, estado atual, alterações realizadas, decisões, problemas, testes, pendências, próximo passo, cuidados e critério de conclusão. Atualizado ao final de uma sessão significativa.
+
+Quando o projeto justificar, adicione:
+
+- `SPECIFICATION.md` — especificação funcional e técnica do sistema, independente de implementação.
+- `TASKS.md` — lista de tarefas do projeto com estado identificável (`[ ]` pendente, `[-]` em andamento, `[x]` concluída, `[!]` bloqueada).
+
+O detalhamento técnico do SDD vive em `.specs/`:
 
 ```text
 .specs/
 ├── project/
-│   ├── PROJECT.md
-│   ├── ROADMAP.md
-│   ├── STATE.md
-│   └── constitution.md
+│   ├── constitution.md
+│   └── ROADMAP.md
 ├── codebase/
 │   ├── STACK.md
 │   ├── TARGET.md
@@ -40,8 +50,7 @@ Para um projeto novo ou brownfield, use esta topologia mínima:
 │   ├── CONVENTIONS.md
 │   ├── TESTING.md
 │   ├── INTEGRATIONS.md
-│   ├── CONCERNS.md
-│   └── HANDSOFF.md
+│   └── CONCERNS.md
 ├── features/<recurso>/
 │   ├── spec.md
 │   ├── context.md       # somente se houver decisões ambíguas
@@ -49,13 +58,12 @@ Para um projeto novo ou brownfield, use esta topologia mínima:
 │   └── tasks.md         # somente para mudanças grandes/complexas
 └── quick/NNN-slug/
     ├── TASK.md
-    ├── SUMMARY.md
-    └── HANDSOFF.md
+    └── SUMMARY.md
 ```
 
-Use `./references/constitution.md` como ponto de partida para `.specs/project/constitution.md`. Não copie a constituição para cada feature.
+Use `./references/constitution.md` como ponto de partida para `AGENTS.md` (regras permanentes) e para `.specs/project/constitution.md`. Não copie a constituição para cada feature.
 
-**Anti-bloat:** crie apenas os arquivos com conteúdo real; nunca crie placeholders vazios. Em projetos pequenos ou de um único firmware, consolide os documentos de `codebase/` em um único `CODEBASE.md` e registre isso em `STATE.md`. Eleve a topologia completa somente quando o projeto crescer.
+**Anti-bloat:** crie apenas os arquivos com conteúdo real; nunca crie placeholders vazios. Em projetos pequenos ou de um único firmware, consolide os documentos de `codebase/` em um único `CODEBASE.md` e registre isso em `STATUS.md`. Eleve a topologia completa somente quando o projeto crescer.
 
 Todo recurso concluído deve deixar quatro resultados verificáveis, mesmo quando forem curtos: código compilável, testes executados, documentação atualizada e um registro de entrega. Em projetos existentes, mantenha `README.md` como porta de entrada para configurar, compilar, testar e executar o firmware; não crie uma segunda documentação concorrente. Inclua no `README.md` uma seção de licença; salvo decisão registrada em contrário, use a **Apache License 2.0** como padrão, contendo `Copyright <ano> <autor>` e o aviso oficial da licença com o link `http://www.apache.org/licenses/LICENSE-2.0`.
 
@@ -78,9 +86,9 @@ Eleve o nível se qualquer mudança aparentemente pequena afetar segurança, lim
 
 ### 1. Reconhecer o contexto
 
-Em trabalho contínuo, comece por `STATE.md` e `HANDSOFF.md` para retomar decisões, bloqueios e próximos passos sem refazer trabalho já validado. Em código existente, leia somente o necessário para localizar o caminho controlador e consulte, conforme o caso:
+Em trabalho contínuo, comece por `AGENTS.md`, `STATUS.md` e `HANDOFF.md` para retomar regras, decisões, bloqueios e próximos passos sem refazer trabalho já validado. Em código existente, leia somente o necessário para localizar o caminho controlador e consulte, conforme o caso:
 
-- `PROJECT.md`, `STATE.md` e `constitution.md`;
+- `README.md`, `AGENTS.md`, `STATUS.md` e `.specs/project/constitution.md`;
 - `TARGET.md`: família e revisão de silício, placa, tensão de alimentação; clock tree (fontes, PLL, divisores, frequências dos periféricos); mapa de pinos e funções alternativas; tabela de interrupções com prioridades e níveis de aninhamento; canais DMA com ownership e regiões de memória acessíveis; regiões de memória (ROM, RAM, DTCM/ITCM, CCM) e tamanhos configurados no linker script; instâncias de periféricos utilizadas; toolchain, SDK, RTOS e versões; modo de boot, fuse bits e opções de gravação relevantes;
 - `TESTING.md` e `CONCERNS.md`;
 - driver, HAL/BSP, task/thread, ISR, máquina de estados e testes vizinhos.
@@ -89,7 +97,7 @@ Registre fatos observados separadamente de hipóteses. Não substitua componente
 
 ### 2. Especificar o comportamento
 
-Crie `spec.md` ou `TASK.md` com:
+Para especificar o sistema como um todo, use `SPECIFICATION.md` (independente de implementação). Para uma feature, crie `spec.md` ou `TASK.md` com:
 
 - objetivo e fora de escopo;
 - atores, estados e eventos;
@@ -151,11 +159,11 @@ Em `design.md`, mantenha o design proporcional e registre:
 - ADRs inline para decisões de impacto arquitetural: `ADR-###: título | contexto | decisão | consequências`;
 - alternativas rejeitadas e motivo.
 
-Qualquer decisão que não seja puramente funcional deve estar neste documento ou em `STATE.md`, nunca escondida em uma tarefa vaga.
+Qualquer decisão que não seja puramente funcional deve estar neste documento ou em `STATUS.md`, nunca escondida em uma tarefa vaga.
 
 ### 5. Quebrar em tarefas
 
-Para mudanças grandes/complexas, cada tarefa deve conter:
+Para mudanças grandes/complexas, registre a lista de tarefas em `TASKS.md` (estados `[ ]`, `[-]`, `[x]`, `[!]`) e detalhe cada tarefa com:
 
 ```text
 Tarefa: T-### <verbo + resultado>
@@ -182,18 +190,18 @@ Cada `tasks.md` deve terminar com uma seção `Entregáveis e aceite` contendo:
 
 Antes de editar, liste as etapas atômicas. Em cada tarefa:
 
-1. leia o artefato correspondente e a constituição;
+1. leia `AGENTS.md`, o artefato correspondente e a constituição;
 2. reutilize padrões locais e confirme o símbolo controlador;
 3. altere o menor conjunto de arquivos;
 4. execute o gate imediatamente;
 5. atualize rastreabilidade e marque desvios da especificação como `SPEC_DEVIATION`;
-6. atualize `STATE.md` com decisões, bloqueios ou lições relevantes;
+6. atualize `STATUS.md` com decisões, bloqueios ou lições relevantes;
 7. mantenha o `README.md` correto para qualquer mudança em instalação, configuração, compilação, testes, gravação ou execução;
-8. gere ou atualize `HANDSOFF.md` para o próximo agente quando houver trabalho incompleto, validação pendente ou contexto que não seja óbvio no código.
+8. gere ou atualize `HANDOFF.md` para o próximo agente quando houver trabalho incompleto, validação pendente ou contexto que não seja óbvio no código.
 
 Não faça commit automaticamente. Se o usuário pedir commits, mantenha commits atômicos por tarefa e não misture refatoração não relacionada.
 
-O `HANDSOFF.md` deve ser objetivo e conter: estado atual, objetivo restante, arquivos relevantes, decisões tomadas, comandos já executados com resultado, bloqueios de hardware/ambiente, próximos passos e critério para considerar o trabalho concluído. Se não houver continuidade prevista, registre essa decisão em `SUMMARY.md` em vez de criar um handoff vazio.
+O `HANDOFF.md` deve ser objetivo e seguir o protocolo de continuidade: contexto, estado atual, alterações realizadas, decisões, problemas, testes, pendências, próximo passo, cuidados e critério de conclusão. Se não houver continuidade prevista, registre essa decisão em `SUMMARY.md` em vez de criar um handoff vazio.
 
 ### 7. Verificar
 
@@ -220,11 +228,13 @@ Antes de finalizar, confirme:
 - `README.md` explica como configurar, compilar, testar e executar o estado atual do projeto. Sempre que possível inclua instruções de gravação, monitoramento, validação física e diagramas mermaid para ilustrar fluxo, máquina de estados e arquitetura;
 - `README.md` declara a licença do projeto (padrão Apache License 2.0, com `Copyright <ano> <autor>` e o link oficial `http://www.apache.org/licenses/LICENSE-2.0`, salvo decisão registrada em contrário);
 - `.gitignore` e `.gitattributes` estão corretos para o alvo e toolchain;
-- o código afetado compilou para o alvo, ou a impossibilidade está registrada em `HANDSOFF.md`;
+- o código afetado compilou para o alvo, ou a impossibilidade está registrada em `HANDOFF.md`;
 - limites de tempo, memória, energia e comunicação foram verificados quando aplicáveis;
 - comportamento de erro, reset e recuperação foi considerado;
+- `AGENTS.md` e `STATUS.md` estão atualizados e consistentes com o código;
+- `TASKS.md` reflete o estado das tarefas, quando usado;
 - `SUMMARY.md` registra entregáveis, arquivos, compilação, testes, critérios de aceite, desvios e riscos residuais;
-- `HANDSOFF.md` registra claramente qualquer continuidade necessária para o próximo agente;
+- `HANDOFF.md` registra claramente qualquer continuidade necessária para o próximo agente;
 - a especificação continua útil para a próxima manutenção do recurso.
 
 ## Formato rápido
@@ -263,8 +273,10 @@ Para um bug pequeno, escreva apenas:
 - [ ] Código implementado
 - [ ] Testes criados ou atualizados
 - [ ] `README.md` atualizado, quando instalação, compilação, teste ou execução mudarem
+- [ ] `AGENTS.md` e `STATUS.md` atualizados, quando houver alteração significativa
+- [ ] `TASKS.md` atualizado, quando usado
 - [ ] `SUMMARY.md` com resultados
-- [ ] `HANDSOFF.md` criado ou atualizado se houver continuidade
+- [ ] `HANDOFF.md` criado ou atualizado se houver continuidade
 ```
 
 ### Novo driver ou periférico
@@ -311,9 +323,10 @@ Para um bug pequeno, escreva apenas:
 - [ ] Testes unitários do driver
 - [ ] Tabela de interface preenchida em `spec.md`
 - [ ] `README.md` atualizado se necessário
+- [ ] `AGENTS.md` e `STATUS.md` atualizados, quando houver alteração significativa
 - [ ] `SUMMARY.md` com resultados
 ```
 
 ## Saída esperada da skill
 
-Ao concluir, apresente uma síntese curta com: escopo escolhido, entregáveis criados/atualizados, requisitos e critérios de aceite atendidos, comando de compilação e resultado, testes e níveis executados, documentação/`README.md` atualizado, `HANDSOFF.md` produzido quando aplicável, desvios da especificação e riscos ou validações de hardware ainda pendentes.
+Ao concluir, apresente uma síntese curta com: escopo escolhido, entregáveis criados/atualizados, requisitos e critérios de aceite atendidos, comando de compilação e resultado, testes e níveis executados, documentação atualizada (`README.md`, `AGENTS.md`, `STATUS.md` e `TASKS.md` quando usados), `HANDOFF.md` produzido quando aplicável, desvios da especificação e riscos ou validações de hardware ainda pendentes.
