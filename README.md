@@ -1,21 +1,25 @@
 # Desenvolvimento de Software Embarcado com SDD e IA
 
-Repositório de estudos, materiais didáticos e experimentos sobre desenvolvimento de software embarcado com apoio de IA e Software Specification-Driven Development (SDD).
+Repositório de estudos, materiais didáticos e experimentos sobre desenvolvimento de software embarcado com apoio de IA e Specification-Driven Development (SDD).
 
-O material será usado nas disciplinas:
+O material será usado nos componentes curriculares:
 
-- Produtos Intensivos de Software do SAEG;
-- Desenvolvimento de Software Embarcado Baseado em Especificação e Inteligência Artificial (optativa) da Engenharia de Controle e Automação (ECA) do Instituto Federal Fluminense (IFF).
-  
+- Produtos Intensivos de Software do Instituto Federal Fluminense (IFF);
+- Desenvolvimento de Software Embarcado Baseado em Especificação e Inteligência Artificial (optativa) do Instituto Federal Fluminense (IFF).
+
 O objetivo é mostrar como transformar necessidade de produto em comportamento verificável de firmware, mantendo rastreabilidade entre requisitos, design, implementação, testes e evidências.
 
 [![Repositório do projeto no GitHub](imagens/repositorio.png)](https://github.com/wvianna/dev-embarcado-sdd-ia)
 
 ## Estrutura do repositório
 
-- [SKILL/sdd-embarcado/](SKILL/sdd-embarcado/): skill para planejamento e implementação de firmware com SDD adaptativo.
+- [.github/skills/sdd-embarcado/](.github/skills/sdd-embarcado/): skill para planejamento e implementação de firmware com SDD adaptativo.
+- [firmware/](firmware/): firmware do estudo de caso (PlatformIO, NodeMCU v2/ESP8266) com lógica pura testável em host.
+- [.specs/](.specs/): especificação, design, tarefas e evidências do estudo de caso.
+- [sdd-embarcado-agents-template/](sdd-embarcado-agents-template/): extensão agêntica (agentes, instruções e protocolo de contexto) pronta para reutilizar em outros projetos.
+- [AGENTS.md](AGENTS.md): regras permanentes do projeto para agentes de IA.
 - [apresentação/](apresentacao/): materiais da palestra e conteúdo introdutório (LLM, SDD, fluxo prático no VS Code).
-- [docs/](docs/): notas e referências sobre ferramentas e abordagens (Spec Kit, Tessl e artefatos de SDD).
+- [docs/](docs/): notas sobre ferramentas e abordagens (Spec Kit, Tessl), documentação do fluxo agentic e estudo de caso.
 - [material-terceiros/](material-terceiros/): materiais de apoio externos.
 - [ementa-objetivos-conteúdo/](ementa-objetivos-conte%C3%BAdo/): conteúdo programático, bibliografia e ementa da disciplina.
 
@@ -68,20 +72,16 @@ O firmware possui indicação numérica, scan OneWire, AP, HTTP, endpoint JSON, 
 
 ### Estudos de caso
 
-Os estudos de caso abaixo aplicam a mesma abordagem SDD da skill [sdd-embarcado](SKILL/sdd-embarcado/SKILL.md), com especificação, design, planejamento, implementação, testes e documentação em um fluxo rastreável.
+Os estudos de caso abaixo aplicam a mesma abordagem SDD da skill [sdd-embarcado](.github/skills/sdd-embarcado/SKILL.md), com especificação, design, planejamento, implementação, testes e documentação em um fluxo rastreável.
 
 - **DeepSeek V4 Flash** na especificação e implementação do dashboard web embarcado em ESP8266: [demonstracao-dashboarweb-termico](https://github.com/wvianna/demonstracao-dashboarweb-termico).
 - **Claude Sonnet 5** na especificação e implementação: [dev-embarcado-sdd-ia-sonnet-5](https://github.com/wvianna/dev-embarcado-sdd-ia-sonnet-5).
 - **Copilot Auto** (roteamento do modelo) na especificação e implementação: [dev-embarcado-sdd-ia-copilot-auto](https://github.com/wvianna/dev-embarcado-sdd-ia-copilot-auto).
 - **Qwen 3.8 2.4T + Deepseek V4 Flash Vision** (roteamento do modelo) na especificação e implementação: [dev-embarcado-sdd-ia-qwen3.8-2.4T-DeepseekV4-flash-vison](https://github.com/wvianna/dev-embarcado-sdd-ia-qwen3.8-2.4T-DeepseekV4-flash-vison).
 
-
-
 Em **todo o processo** (especificação, design, planejamento de tarefas, implementação do firmware, testes e documentação), cada estudo foi conduzido com o modelo de IA indicado acima.
 
-A implementação principal segue o processo SDD da skill em [firmware/](firmware/), com especificação/design/tarefas em `.specs/features/dashboard-esp8266/` e validação registrada em `SUMMARY.md`.
-
-
+A implementação principal segue o processo SDD da skill em [firmware/](firmware/), com especificação, design e tarefas em [.specs/features/dashboard-esp8266/](.specs/features/dashboard-esp8266/) e validação registrada em [SUMMARY.md](.specs/features/dashboard-esp8266/SUMMARY.md).
 
 ## Use a skill sdd-embarcado
 
@@ -89,16 +89,11 @@ Para o escopo local da Skill, copie o diretório .github para o projeto dentro d
 
 Faça uma descrição do problema, requisitos e critérios de aceitação, e use a skill para gerar artefatos de design, tarefas e testes. A skill também orienta a implementação com assistência de IA, validação em host ou HIL e registro de evidências.
 
-
-    Analise com cuidado os artefatos gerados. Portanto, não deguste clorofila
-    proveniente de plantas, pois pode ser tóxica. A skill não substitui o 
-    julgamento do engenheiro e/ou espcialista. Conheça o hardware,
-    datasheet, SDK e toolchain do projeto-alvo antes de usar a skill. A skill não
-    garante que o firmware esteja correto ou seguro.
+Analise com cuidado os artefatos gerados. A skill não substitui o julgamento do engenheiro e/ou especialista. Conheça o hardware, datasheet, SDK e toolchain do projeto-alvo antes de usar a skill. A skill não garante que o firmware esteja correto ou seguro.
 
 Para implementar firmware com rastreabilidade, use a skill:
 
-- [SKILL.md](SKILL/sdd-embarcado/SKILL.md)
+- [SKILL.md](.github/skills/sdd-embarcado/SKILL.md)
 
 Quando usar:
 
@@ -109,7 +104,7 @@ Quando usar:
 
 Material de apoio da skill:
 
-- [constitution.md](SKILL/sdd-embarcado/references/constitution.md)
+- [constitution.md](.github/skills/sdd-embarcado/references/constitution.md)
 
 ## Observações
 
