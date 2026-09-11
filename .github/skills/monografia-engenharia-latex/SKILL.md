@@ -450,3 +450,12 @@ A monografia final deve ser:
 - visualmente organizada;
 - compilável em LaTeX;
 - entregue em PDF quando a infraestrutura permitir.
+
+## 24. Recursos internos da skill
+
+Consultar sob demanda, quando a etapa correspondente estiver ativa:
+
+- `rules/` — `abnt.md`, `academic-writing.md`, `citations.md`, `engineering.md`, `methodology.md`, `results.md`, `figures-tables.md`, `diagrams-mermaid.md`, `quality-control.md`;
+- `workflows/` — `initialize.md`, `audit-workspace.md`, `write-chapter.md`, `review.md`, `finalize.md`.
+
+O `README.md` da skill detalha a árvore completa.

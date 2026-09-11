@@ -5,7 +5,7 @@ Skill para criação, revisão e evolução de monografias de graduação em Eng
 ## Estrutura
 
 ```text
-skill-monografia-engenharia-latex/
+monografia-engenharia-latex/
 ├── SKILL.md
 ├── README.md
 ├── rules/

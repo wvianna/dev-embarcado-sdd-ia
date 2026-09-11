@@ -1,71 +1,7 @@
- Especificação Técnica de Projeto: Sistema de Monitoramento e Controle Térmico ESP8266
+ Insira aqui a descrição do seu projeto.
+ 
+ Procure fornecer uma visão geral clara e concisa do seu projeto, incluindo seus objetivos, funcionalidades.
 
-1. Introdução e Visão Geral do Projeto
+Inclua detalhes sobre o hardware, framework e tecnologias utilizadas, bem como qualquer requisito específico para a execução do projeto.
 
-Este documento estabelece as diretrizes normativas para o desenvolvimento de uma solução de monitoramento e controle térmico de baixo custo, projetada para aplicações industriais e residenciais que exigem alta confiabilidade em hardware limitado. A consolidação rigorosa de requisitos de hardware, conectividade e segurança em um único documento técnico é estratégica para garantir que a implementação, conduzida por desenvolvedores ou modelos de IA, mantenha a integridade funcional sem desvios de arquitetura.
-
-A precisão na especificação de sistemas embarcados reduz drasticamente os riscos de falhas de hardware, como a contenção de recursos ou danos térmicos por malfuncionamento de sensores. Ao definir protocolos claros e limites operacionais, asseguramos a interoperabilidade entre o firmware e a interface de monitoramento. O sucesso deste sistema depende estritamente da conformidade com o mapeamento físico e lógico detalhado a seguir.
-
-2. Arquitetura de Hardware e Interface de I/O
-
-A plataforma selecionada é o NodeMCU v2 (ESP8266), escolhida por sua maturidade no ecossistema de IoT e versatilidade em prototipagem rápida. 
-Para evitar conflitos de hardware e garantir a estabilidade do sistema, o mapeamento de pinos deve seguir rigorosamente a tabela abaixo, respeitando os níveis lógicos de 3.3V nativos da placa.
-
-Componente	Pino Físico	GPIO / IO	Nível Lógico	Função Técnica
-Sensor DS18B20	D2	GPIO 04	3.3V	Entrada de dados via protocolo OneWire
-Buzzer de Alarme	D0	IO 16	3.3V	Saída digital para sinalização sonora
-Resistência	D1	IO 05	3.3V	Saída PWM (0 a 1023) para controle de carga
-
-Avaliação Técnica (So What?): A utilização de Modulação por Largura de Pulso (PWM) com resolução de 10 bits (1024 passos) permite um controle granular da potência dissipada pela resistência de aquecimento. Diferente de um acionamento binário, a modulação possibilita a implementação futura de algoritmos de controle mais sofisticados, como o PID, otimizando a eficiência energética e minimizando o overshoot térmico. A separação física entre o buzzer (IO 16) e o sensor (GPIO 04) é crítica para evitar contenção de recursos nos barramentos internos do microcontrolador.
-
-3. Infraestrutura de Rede e Conectividade Wi-Fi
-
-O sistema deve operar de forma autônoma, garantindo acesso aos dados mesmo em ambientes desprovidos de infraestrutura de rede pré-existente. Para isso, o ESP8266 atuará como o nó central da rede.
-
-* Modo de Operação: Access Point (AP) sem criptografia para agilizar o provisionamento em campo.
-* Identificação (SSID): Dinâmico, derivado do endereço MAC do chip (Ex: ESP8266_1A2B3C).
-* Configuração de IP Fixo:
-  * Endereço IP: 192.168.4.1
-  * Gateway: 192.168.4.1
-  * Máscara de Sub-rede: 255.255.255.0 (CIDR /24)
-* Serviços: Servidor DHCP ativo para atribuição automática de IPs aos clientes e Web Server operando na porta 80.
-
-Avaliação Técnica (So What?): A opção por uma rede aberta com IP fixo e Gateway idêntico simplifica o stack de rede e elimina latências de handshake em conexões de emergência. Embora apresente implicações de segurança, em um contexto de controle industrial local, essa arquitetura prioriza a disponibilidade e a recuperação rápida do acesso ao dashboard.
-
-4. Lógica de Controle e Protocolos de Segurança
-
-A integridade do sistema de aquecimento depende de uma lógica de controle determinística. O firmware deve ser projetado para operar sob regime 
-de segurança máxima, prevenindo danos físicos por falhas de leitura ou superaquecimento.
-
-1. Varredura OneWire: No setup, é obrigatório realizar o scan do barramento para identificar o endereço único do DS18B20. Sem a detecção do sensor, 
-o sistema não deve permitir o acionamento da carga.
-2. Amostragem Térmica: Leitura a cada 1 segundo (tolerância de 150ms). Restrição de Arquitetura: Não é permitido o uso de interrupções de hardware ou Timers para esta tarefa. A lógica deve ser puramente não-bloqueante, baseada no loop principal (uso de millis()).
-3. Threshold de Segurança (80°C): Se a temperatura atingir ≥ 80°C ou houver falha de comunicação com o sensor, o sistema deve executar o desligamento imediato (PWM = 0) da resistência.
-4. Sinalização de Alarme: O buzzer deve operar em ciclo de 150ms (ON) e 2s (OFF) apenas enquanto a condição de risco (Temp ≥ 80°C) persistir.
-5. Notificação de Erro: Falhas de leitura devem ser enviadas imediatamente ao dashboard como alertas críticos.
-
-Avaliação Técnica (So What?): A proibição do uso de delay() e de interrupções de hardware visa manter o processador livre para gerenciar as tarefas de background do Wi-Fi (Watchdog). Isso evita resets inesperados do ESP8266 e garante que o Web Server responda prontamente, mesmo enquanto o sistema processa a lógica de alarme e monitoramento.
-
-5. Interface do Usuário (Dashboard Web Responsivo)
-
-O dashboard é a camada final de validação do sistema, exigindo clareza absoluta para o operador.
-
-* UX/UI: Tema claro, interface responsiva e layout que elimine a necessidade de rolagem em desktops.
-* Monitoramento Térmico: Indicação gráfica via Gauge e indicação numérica textual em destaque.
-* Gráfico de Tendência: Escala fixa de 20°C a 90°C (não auto-ajustável) para permitir a percepção visual imediata da proximidade do threshold de segurança. Grade de fundo em cinza claro para referência.
-* Interatividade: Botão ON/OFF para a resistência e indicadores de estado por cores (ex: Verde para ativo, Vermelho para desligado).
-* Metadados do Sistema: Cabeçalho com métricas de saúde: Carga Idle, uso de RAM e ocupação da Flash.
-* Auxílio Técnico: Implementação de Tooltips (ajuda rápida) em todos os elementos de controle e visualização.
-* Abstração de Dados: Fornecimento de valores via endpoint /json.
-
-Avaliação Técnica (So What?): A arquitetura baseada em um endpoint JSON permite o uso de polling assíncrono pela interface (AJAX). Isso evita o refresh total da página, garantindo uma visualização em tempo real "smooth" e reduzindo o overhead de processamento do Web Server, enquanto a exibição de métricas de RAM/Flash facilita a identificação de vazamentos de memória (memory leaks) durante longos períodos de operação.
-
-6. Parâmetros de Desenvolvimento e Compilação
-
-Para assegurar a reprodutibilidade do firmware, o ambiente de desenvolvimento deve seguir as especificações:
-
-* Ambiente: PlatformIO com Framework Arduino.
-* Gestão de Memória: Footprint máximo de 4MB (Flash).
-* Eficiência de Código: O binário deve ser otimizado para execução em tempo real, sem persistência de dados (sem gravação em EEPROM/SPIFFS), focando na volatilidade e velocidade de resposta do sistema.
-
-Esta especificação define o limite superior de segurança e funcionalidade, devendo ser seguida sem desvios para garantir a estabilidade térmica e operacional do sistema.
+Detalhe.

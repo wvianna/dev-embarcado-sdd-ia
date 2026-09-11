@@ -35,11 +35,11 @@ docs/                      # Planejamento, relatórios, segurança, release, ras
 
 | Ação | Comando |
 |---|---|
-| Compilar para o alvo | `pio -d firmware run` |
-| Testes host (lógica pura) | `pio -d firmware test -e native` |
-| Gravar no ESP | `pio -d firmware run -t upload --upload-port /dev/ttyUSB0` |
-| Monitor serial | `pio -d firmware device monitor -p /dev/ttyUSB0 -b 115200` |
-| Gravar build de bancada | `pio -d firmware run -e bancada -t upload --upload-port /dev/ttyUSB0` |
+| Compilar para o alvo | `pio run -d firmware` |
+| Testes host (lógica pura) | `pio test -d firmware -e native` |
+| Gravar no ESP | `pio run -d firmware -t upload --upload-port /dev/ttyUSB0` |
+| Monitor serial | `pio device monitor -d firmware -p /dev/ttyUSB0 -b 115200` |
+| Gravar build de bancada | `pio run -d firmware -e bancada -t upload --upload-port /dev/ttyUSB0` |
 
 Porta serial: `/dev/ttyUSB0` (115200 baud). Conectar ao AP do ESP para testes HTTP (SSID `ESP8266_XXXXXX`, IP 192.168.4.1).
 
@@ -67,7 +67,7 @@ Porta serial: `/dev/ttyUSB0` (115200 baud). Conectar ao AP do ESP para testes HT
 ## 7. Testes e evidência
 
 - Lógica pura: testes Unity obrigatórios em `firmware/test/` (env `native`) — gate mínimo antes de qualquer entrega.
-- Alvo: `pio -d firmware run` deve compilar limpo; medir sketch/RAM e registrar.
+- Alvo: `pio run -d firmware` deve compilar limpo; medir sketch/RAM e registrar.
 - Bancada: flash real + monitor serial + AP/HTTP; registrar evidências em `docs/05-testing/`.
 - **Nunca declarar hardware validado com base apenas em teste HOST.** Níveis de evidência: `HOST`, `SIMULADOR`, `BANCADA`, `HIL` (simulador não se aplica aqui).
 
