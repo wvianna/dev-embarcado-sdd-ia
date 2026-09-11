@@ -1,0 +1,14 @@
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.bcf
+*.run.xml
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+build/*.pdf

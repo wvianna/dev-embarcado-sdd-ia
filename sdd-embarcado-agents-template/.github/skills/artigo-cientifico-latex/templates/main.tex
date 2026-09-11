@@ -1,0 +1,53 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{hyperref}
+\usepackage{cleveref}
+
+% Ajuste conforme o destino editorial.
+% Para referências no padrão ABNT com biber:
+% \usepackage[backend=biber,style=abnt]{biblatex}
+% \addbibresource{references.bib}
+% Caso use BibTeX clássico, remova as linhas acima e use \bibliography no final.
+
+\title{Título do artigo}
+\author{Autor A \and Autor B}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Resumo do artigo: contexto, problema, objetivo, metodologia, principais
+resultados e conclusão.
+\end{abstract}
+
+\noindent\textbf{Palavras-chave:} palavra1; palavra2; palavra3.
+
+\input{sections/introduction}
+\input{sections/literature}
+\input{sections/methodology}
+\input{sections/results}
+\input{sections/discussion}
+\input{sections/conclusion}
+
+% Com biblatex/biber:
+% \printbibliography
+
+% Com BibTeX clássico:
+% \bibliographystyle{plain}
+% \bibliography{references}
+
+\end{document}

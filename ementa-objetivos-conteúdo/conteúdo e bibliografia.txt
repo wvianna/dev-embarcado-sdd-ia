@@ -118,4 +118,5 @@ https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents
 https://www.anthropic.com/engineering/building-effective-agents
 6. GITHUB. GitHub Copilot Documentation. Disponível em: . Acesso em: 21 ago. 2026.
 https://docs.github.com/en/copilot
+7. VIANNA, William da Silva. Desenvolvimento de Software Embarcado com SDD e IA. GitHub, 2026. Repositório de código-fonte e materiais didáticos. Disponível em: https://github.com/wvianna/dev-embarcado-sdd-ia. Acesso em: 11 set. 2026.
 

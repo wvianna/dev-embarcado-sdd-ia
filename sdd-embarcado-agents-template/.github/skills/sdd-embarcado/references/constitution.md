@@ -55,7 +55,7 @@
 ### 7. Processo de mudança
 
 - A especificação é atualizada quando o comportamento aprovado muda; não se aceita corrigir apenas o código deixando o contrato obsoleto.
-- Decisões que alteram risco, arquitetura, timing, energia, memória ou compatibilidade são registradas em `STATE.md` ou no design da feature.
+- Decisões que alteram risco, arquitetura, timing, energia, memória ou compatibilidade são registradas em `STATUS.md` ou no design da feature.
 - Uma tarefa deve ser pequena o bastante para revisão e verificação isoladas.
 - Não se adicionam abstrações, dependências ou camadas sem benefício verificável no alvo.
 
