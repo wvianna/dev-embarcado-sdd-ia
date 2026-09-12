@@ -225,7 +225,7 @@ Legenda de evidência: **HOST** = testes Unity da lógica pura, inspeção está
 |---|---|---|
 | P1 | Hardware físico de bancada disponível (placa em `/dev/ttyUSB0`, host com Wi-Fi, DS18B20, buzzer ativo, carga). | Contexto da tarefa / ROADMAP §3.1 |
 | P2 | Um único DS18B20 no barramento; o endereço identificado na varredura é a referência do sensor. | F1 §4.1 |
-| P3 | Pull-up do barramento OneWire **A CONFIRMAR** no hardware físico (típico 4,7 kΩ); o firmware não o controla. | constitution §4 |
+| P3 | Pull-up do barramento OneWire **A CONFIRMAR** no hardware físico (típico 4,7 kΩ). Desde ADR-014 (2ª sessão) o firmware habilita o pull-up **interno** do GPIO4 como mitigação e faz retries de varredura/leitura; o resistor externo de 4,7 kΩ segue recomendado. | constitution §4 |
 | P4 | Alimentação por USB 5 V, I/O em 3,3 V; GPIO16 restrito a `digitalRead/digitalWrite`. | constitution §1/§4 |
 | P5 | O comportamento do DS18B20 segue a biblioteca `DallasTemperature` (erros de comunicação reportados pela biblioteca são tratados como leitura inválida). | F1 §4 / CODEBASE |
 | P6 | Cenário de uso local de estudo de caso; AP aberto é decisão de produto registrada (risco aceito). | F1 §3 / CODEBASE (CONCERNS) |
@@ -254,17 +254,17 @@ Legenda de evidência: **HOST** = testes Unity da lógica pura, inspeção está
 
 > `Estado`: `PASS` = evidência registrada (HOST e/ou BANCADA); `PASS*` = PASS com nota/limitação explícita; `PENDENTE` = aguardando ação física do operador (justificativa na célula). Evidências em `docs/05-testing/controle-termico/` (checklist `2026-09-12-checklist-bancada.md`).
 >
-> **Revisão DEC-07 (2ª sessão de bancada, 2026-09-12):** cadências 1200 ms/2000 ms e vínculo de ROM em vigor (CA-004 [1050, 1350] ms; CA-023 ≤ 2,5 s); evidências com sufixo `-dec07`.
+> **Revisão DEC-07 (2ª sessão de bancada, 2026-09-12):** cadências 1200 ms/2000 ms e vínculo de ROM em vigor (CA-004 [1050, 1350] ms; CA-023 ≤ 2,5 s); mitigação do barramento OneWire (pull-up interno + retries) registrada em **ADR-014**; evidências com sufixo `-dec07`/`-dec07b`.
 
 | Requisito | Critério | Tarefa | Código | Teste | Evidência | Estado |
 |---|---|---|---|---|---|---|
-| FR-001 | CA-001, CA-002, CA-017 | M2–M3, T-019 | `src/ds18b20_sensor`, `src/main.cpp` | `firmware/test/test_control_policy` (estado de boot) + log serial + leitura por ROM | HOST + BANCADA (`...-bateria-injecao-dec07.log`, `...-rede-dec07.log`, `...-sensor-instavel-dec07.log`) | PASS* — ROM identificada/vinculada (`28FFE203B41605C2`) e usada nas leituras; detecção de boot intermitente neste protótipo (pull-up P3 em aberto, vínculo pela re-varredura) |
+| FR-001 | CA-001, CA-002, CA-017 | M2–M3, T-019, T-022 | `src/ds18b20_sensor`, `src/main.cpp` | `firmware/test/test_control_policy` (estado de boot) + log serial + leitura por ROM | HOST + BANCADA (`...-boot-dec07c.log`, `...-soak-retry-dec07b.log`, `...-bateria-injecao-dec07.log`) | PASS — ROM identificada/vinculada no `setup` (`28FFE203B41605C2`, 0,28 s) e usada nas leituras; retries de varredura/leitura (ADR-014) eliminam as falhas do protótipo sem pull-up externo |
 | FR-002 | CA-002, CA-007, CA-017 | M1–M2 | `lib/thermal_logic/control_policy`, `src/main.cpp` | `firmware/test/test_control_policy` | HOST + BANCADA em `docs/05-testing/` | PASS (HOST+BANCADA — ausência real: `NO_SENSOR`, ON recusado) |
 | FR-003 | CA-003 | M2–M3, T-019 | `src/ds18b20_sensor`, `lib/thermal_logic/periodic_timer` | `firmware/test/test_periodic_timer` + desconexão/reconexão física | HOST + BANCADA (`...-sensor-instavel-dec07.log`, `...-boot-dec07.log`) | PASS — detecção e perda em runtime observadas (mesma ROM revinculada; carga bloqueada na perda); `rescan()` re-enumera com `begin()` (`getDeviceCount()` é cacheado — ADR-013) |
 | FR-004 | CA-004, CA-021 | M1–M3, T-020 | `lib/thermal_logic/periodic_timer`, `src/config.h` | `firmware/test/test_periodic_timer` + medição de ciclo | HOST + BANCADA (`...-bateria-injecao-dec07.log` 1176–1224 ms; `...-rede-dec07.log` 1200 ms) | PASS (DEC-07 — janela [1050, 1350] ms) |
 | FR-005 | CA-004, CA-005 | M2–M3, T-019 | `src/ds18b20_sensor` | inspeção (assíncrono por ROM) + estabilidade da amostragem | BANCADA (`...-rede-dec07.log`, `...-bateria-injecao-dec07.log`) | PASS (DEC-07 — `requestTemperaturesByAddress(rom)`/`getTempC(rom)`; sem espera; cadência mantida sob carga) |
 | FR-006 | CA-015, CA-017 | M1 | `lib/thermal_logic/control_policy` | `firmware/test/test_control_policy` | HOST em `docs/05-testing/` | PASS (HOST + injeção `FAULT` na bancada) |
-| FR-007 | CA-006, CA-007 | M2–M3 | `src/web_server`, `src/web/dashboard_html.h`, `lib/thermal_logic/control_policy` | `firmware/test/test_control_policy` + HTTP em bancada | HOST + BANCADA em `docs/05-testing/` | PASS (HOST+BANCADA — `/on`/`/off` via HTTP reais) |
+| FR-007 | CA-006, CA-007 | M2–M3, T-023 | `src/web_server`, `src/web/dashboard_html.h`, `lib/thermal_logic/control_policy` | `firmware/test/test_control_policy` + HTTP em bancada + clique real no navegador | HOST + BANCADA (`...-dashboard-botao-dec07d.log`) | PASS (HOST+BANCADA — `/on`/`/off` via HTTP reais; botões do dashboard funcionais após correção do handler) |
 | FR-008 | CA-006 | M1–M3 | `lib/thermal_logic/control_policy`, `src/main.cpp` | `firmware/test/test_control_policy` + medição de PWM | HOST + BANCADA em `docs/05-testing/` | PASS (HOST+BANCADA — PWM 1023/0 observado no `/json`) |
 | FR-009 | CA-007 | M1–M2 | `lib/thermal_logic/control_policy` | `firmware/test/test_control_policy` | HOST + BANCADA em `docs/05-testing/` | PASS (HOST+BANCADA — recusas com motivo) |
 | FR-010 | CA-008, CA-009 | M1–M3 | `lib/thermal_logic/control_policy` | `firmware/test/test_control_policy` + injeção em bancada | HOST + BANCADA em `docs/05-testing/` | PASS (HOST+BANCADA — corte na mesma avaliação, bateria checks 4/10) |
@@ -281,7 +281,7 @@ Legenda de evidência: **HOST** = testes Unity da lógica pura, inspeção está
 | FR-021 | CA-022 | M2–M3 | `src/web/dashboard_html.h` | checklist visual em bancada (1366×768) | BANCADA em `docs/05-testing/` | PASS (navegador real, sem rolagem) |
 | FR-022 | CA-022 | M2–M3 | `src/web/dashboard_html.h` | checklist visual em bancada | BANCADA em `docs/05-testing/` | PASS (valor numérico + gauge renderizados) |
 | FR-023 | CA-022 | M1–M3 | `src/web/dashboard_html.h`, `lib/thermal_logic/trend_buffer` | `firmware/test/test_trend_buffer` + checklist visual | HOST + BANCADA em `docs/05-testing/` | PASS (HOST + gráfico 20–90 °C com histórico real) |
-| FR-024 | CA-007, CA-022 | M2–M3 | `src/web/dashboard_html.h`, `src/web_server` | checklist visual + recusa observada | BANCADA em `docs/05-testing/` | PASS (cores de estado + feedback de recusa) |
+| FR-024 | CA-007, CA-022 | M2–M3, T-023 | `src/web/dashboard_html.h`, `src/web_server` | checklist visual + recusa observada + clique real nos botões | BANCADA (`...-dashboard-botao-dec07d.log`) | PASS (cores de estado + feedback de recusa; botões Ligar/Desligar/Rearmar funcionais no navegador) |
 | FR-025 | CA-020, CA-022 | M1–M3 | `src/web/dashboard_html.h`, `lib/thermal_logic/status_json`, `src/main.cpp` | `firmware/test/test_status_json` + checklist visual | HOST + BANCADA em `docs/05-testing/` | PASS (métricas idle/RAM/flash/uptime visíveis) |
 | FR-026 | CA-022 | M2–M3 | `src/web/dashboard_html.h` | checklist visual (alarme/latch/rearme) | BANCADA em `docs/05-testing/` | PASS (alertas + latch + botão rearme) |
 | FR-027 | CA-022 | M2 | `src/web/dashboard_html.h` | checklist visual (tooltips) | BANCADA em `docs/05-testing/` | PASS (23 tooltips medidos) |

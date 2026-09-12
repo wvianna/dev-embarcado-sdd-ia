@@ -50,6 +50,7 @@ Porta serial: `/dev/ttyUSB0` (115200 baud). Conectar ao AP do ESP para testes HT
 - PWM da resistência: `analogWriteRange(1023)` + `analogWrite` (10 bits). 0 = desligado; 1023 = potência máxima.
 - **Proibido**: interrupções de hardware, timers para amostragem, `delay()` bloqueante, EEPROM/SPIFFS/persistência.
 - Amostragem: 1200 ms ±150 ms (DEC-07), não bloqueante com `millis()`; varredura OneWire no boot vincula a ROM do DS18B20 e a conversão/leitura usam esse endereço (re-varredura de 5 s revincula); conversão assíncrona (`setWaitForConversion(false)`, ler ao final do ciclo e re-disparar).
+- OneWire (ADR-014): firmware habilita o **pull-up interno** do GPIO4 e faz 3 tentativas de varredura no boot / 2 por re-varredura, com 1 retry imediato na leitura; o resistor externo de **4,7 kΩ** continua recomendado (P3).
 - Threshold de segurança: `>= 80.0 °C` → PWM 0 imediato + latch até rearme manual; buzzer 150 ms ON / 2000 ms OFF enquanto a condição persistir.
 - Sem sensor detectado no boot → carga bloqueada; re-scan OneWire a cada 5 s; sem leitura válida → carga bloqueada.
 - AP aberto (sem senha) — decisão de produto registrada; IP fixo 192.168.4.1/24; DHCP ativo; HTTP porta 80.

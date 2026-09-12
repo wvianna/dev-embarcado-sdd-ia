@@ -222,6 +222,26 @@
 - **Feito quando:** HOST 37/37; bateria 14/14; rede e dashboard medidos; produção regravada com estado final seguro documentado; matriz e documentos atualizados.
 - **Gate:** logs `-dec07` + `2026-09-12-dashboard-dec07.png`; pendências físicas explícitas (pull-up P3; audição do buzzer).
 
+### [x] T-022 Mitigação do barramento OneWire: pull-up interno + retries (ADR-014)
+
+- **Requisitos:** FR-001, FR-003, FR-006, FR-009, FR-014 (sintomas de bancada: leituras intermitentes e `ON` recusado/limpo).
+- **Onde:** `firmware/src/ds18b20_sensor.cpp`; design `ADR-014`; constitution §4/P3; `AGENTS.md` §5; `CODEBASE.md`.
+- **Depende de:** T-019 (vínculo de ROM) e T-020 (cadências).
+- **Feito quando:** pull-up interno do GPIO4 habilitado antes da varredura; 3 tentativas de varredura no boot e 2 por re-varredura; 1 retry imediato na leitura; `parasita=` no log da ROM.
+- **Testes:** bancada — antes: 13 leituras inválidas/90 s e scan do boot falhando; depois: 0 inválidas/0 ausências em 90 s, `ON` retido com aquecimento 41,5 → 66,1 °C, boot vinculando a ROM no `setup` (0,28 s). Diagnóstico de fase do boot documentado (hipótese de conversão em andamento refutada).
+- **Gate:** evidências `2026-09-12-soak-baseline-dec07b.log`, `...-soak-pullup-interno-dec07b.log`, `...-soak-final-dec07b.log`, `...-soak-retry-dec07b.log`, `...-diagnostico-fase-boot-dec07b.log`, `...-diagnostico-rescan-dec07b.log`, `...-diagnostico-on-dec07b.log`; produção regravada (`...-boot-producao-dec07c.log`).
+
+## M6 — Correção do dashboard web (3ª sessão, 2026-09-12)
+
+### [x] T-023 Corrigir o handler dos botões do dashboard (`cmd is not defined`)
+
+- **Requisitos:** FR-007, FR-024, FR-029 (observáveis do operador).
+- **Onde:** `firmware/src/web/dashboard_html.h`.
+- **Depende de:** T-009.
+- **Feito quando:** os botões Ligar/Desligar/Rearmar deixam de usar `onclick` inline (o `cmd` do IIFE não é global) e passam a usar `addEventListener` dentro do IIFE.
+- **Testes:** navegador real — pré-correção: `Uncaught ReferenceError: cmd is not defined` e nenhum efeito; pós-correção: Ligar → PWM 1023 (aquecimento 41,2 → 47,9 °C), Desligar → PWM 0, Rearmar → recusa `not_latched` com feedback.
+- **Gate:** `2026-09-12-dashboard-botao-dec07d.log` + screenshot `2026-09-12-dashboard-botao-carga-ligada.png`; produção regravada.
+
 ## Entregáveis e aceite
 
 **Arquivos esperados**

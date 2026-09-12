@@ -105,8 +105,8 @@ display:none;align-items:center;justify-content:space-between;gap:8px}
     <div class="card">
       <h2>Resistência (GPIO5 · PWM) <span class="help" title="Ligar aplica PWM 1023 (potência máxima); desligar aplica PWM 0. Comandos são recusados com motivo quando há bloqueio de segurança.">?</span></h2>
       <div class="buttons">
-        <button class="on" id="btn-on" title="Ligar a resistência (PWM 1023)." onclick="cmd('/on')">Ligar</button>
-        <button class="off" id="btn-off" title="Desligar a resistência (PWM 0)." onclick="cmd('/off')">Desligar</button>
+        <button class="on" id="btn-on" title="Ligar a resistência (PWM 1023).">Ligar</button>
+        <button class="off" id="btn-off" title="Desligar a resistência (PWM 0).">Desligar</button>
       </div>
       <div class="feedback" id="feedback" title="Resultado do último comando enviado.">Pronto.</div>
       <div class="badges">
@@ -122,7 +122,7 @@ display:none;align-items:center;justify-content:space-between;gap:8px}
       <div class="alert sensor" id="alert-sensor" title="Nenhum DS18B20 detectado no barramento: carga bloqueada.">Sensor ausente — carga bloqueada. Re-varredura a cada 5 s.</div>
       <div class="alert latch" id="alert-latch">
         <span>Alarme latcheado: rearme manual necessário (somente com leitura válida abaixo de 80 °C).</span>
-        <button class="rearm" id="btn-rearm" title="Rearmar o alarme latcheado. Aceito apenas com leitura válida < 80,0 °C; a carga continua desligada até novo comando Ligar." onclick="cmd('/rearm')">Rearmar</button>
+        <button class="rearm" id="btn-rearm" title="Rearmar o alarme latcheado. Aceito apenas com leitura válida < 80,0 °C; a carga continua desligada até novo comando Ligar.">Rearmar</button>
       </div>
     </div>
   </section>
@@ -244,6 +244,12 @@ function cmd(path){
     refresh();
   }).catch(function(){setFeedback("Falha ao enviar o comando.",true);});
 }
+
+// Botões: handlers ligados aqui dentro (o `cmd` do IIFE não é visível para
+// `onclick` inline — ReferenceError em navegador real; correção 3ª sessão).
+$("btn-on").addEventListener("click",function(){cmd("/on");});
+$("btn-off").addEventListener("click",function(){cmd("/off");});
+$("btn-rearm").addEventListener("click",function(){cmd("/rearm");});
 
 setInterval(refresh,2000);  // polling de 2 s (FR-029/DEC-07)
 refresh();

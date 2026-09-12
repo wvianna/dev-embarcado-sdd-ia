@@ -37,7 +37,7 @@
 ### 4. Interfaces de hardware e comunicação
 
 - Pinagem congelada: DS18B20 em D2/GPIO4 (OneWire); buzzer ativo em D0/GPIO16 (digital, sem PWM/IRQ); resistência em D1/GPIO5 (PWM 10 bits, `analogWriteRange(1023)`).
-- Pull-up do barramento OneWire: **A CONFIRMAR** no hardware físico (típico 4,7 kΩ); não é controlado pelo firmware.
+- Pull-up do barramento OneWire: **A CONFIRMAR** no hardware físico (típico 4,7 kΩ). O firmware habilita o **pull-up interno** do GPIO4 como mitigação (ADR-014, 2ª sessão); o resistor externo de 4,7 kΩ segue recomendado para margem de projeto — a mitigação interna é fraca e não substitui o valor especificado de barramento.
 - Rede: AP aberto (decisão de produto registrada), SSID `ESP8266_<3 últimos bytes do MAC>`, 192.168.4.1/24, DHCP ativo, HTTP porta 80.
 - Contrato HTTP estável documentado no design da feature: dashboard em `/`, telemetria em `/json`, comandos de carga/rearme em rotas dedicadas.
 

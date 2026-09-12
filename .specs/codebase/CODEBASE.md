@@ -55,4 +55,4 @@
 - **Falha de sensor não é latcheada**: a carga permanece bloqueada enquanto a leitura for inválida e retoma quando a leitura voltar a ser válida (decisão registrada; risco residual documentado).
 - **Jitter de amostragem sob carga HTTP**: medido em bancada; limite de ±150 ms.
 - **Validações dependentes de operador**: audição do buzzer e desconexão física do sensor (D2) são pendências de bancada quando não executadas.
-- **Efeitos elétricos**: pull-up do OneWire a confirmar no hardware; ruído com cabeamento longo é risco físico fora do escopo do firmware.
+- **Efeitos elétricos**: pull-up do OneWire — firmware habilita o pull-up interno do GPIO4 como mitigação (ADR-014, 2ª sessão) e faz retries de varredura/leitura; o resistor externo de 4,7 kΩ segue recomendado (P3). Ruído com cabeamento longo é risco físico fora do escopo do firmware.
