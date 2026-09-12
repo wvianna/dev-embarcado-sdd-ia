@@ -1,24 +1,30 @@
-#ifndef WEB_SERVER_H
-#define WEB_SERVER_H
+// web_server.h — servidor HTTP: dashboard, telemetria e comandos (contrato design §4.5).
+//
+// O módulo não conhece a política diretamente: recebe hooks do main (composição),
+// o que mantém a FSM como owner único do estado.
+#pragma once
 
-#include <Arduino.h>
-#include <ESP8266WebServer.h>
-#include <sampler.h>
+#include <stddef.h>
+#include <stdint.h>
 
-// Servidor HTTP: GET / (dashboard) e GET /api/values (JSON).
-class WebServerService {
-public:
-    // ref: amostra mais recente, atualizada pelo loop de aquisição.
-    explicit WebServerService(const Sample* ref);
+namespace web {
 
-    void begin();               // inicia o servidor na porta 80
-    void handleClient();        // processa requisições (chamar no loop)
-
-private:
-    ESP8266WebServer _server;
-    const Sample* _sample;
-    void onIndex();
-    void onApiValues();
+// Resultado observável de um comando (para o feedback ao operador — FR-009/FR-012).
+struct CommandResult {
+  bool ok;             // comando efetivado?
+  const char* reason;  // motivo estável da recusa ("none" quando aceito)
+  uint16_t pwm;        // PWM resultante (0–1023)
+  bool latch;          // latch após o comando
+  const char* state;   // estado de interface (NO_SENSOR/INVALID_READING/NORMAL/LATCHED)
 };
 
-#endif // WEB_SERVER_H
+struct Handlers {
+  CommandResult (*heater)(bool on);        // ON/OFF (mesma política do console)
+  CommandResult (*rearm)();                // rearme manual do latch
+  size_t (*fill_status)(char* out, size_t cap);  // preenche o payload /json
+};
+
+void begin(const Handlers& hooks);
+void poll();  // atende clientes (não bloqueante, cooperativo)
+
+}  // namespace web

@@ -68,7 +68,7 @@ Na apresentação principal ([sdd_software_embarcado.md](https://github.com/wvia
 - dashboard web embarcado exibindo valores em tempo real;
 - indicação numérica, gauge e gráfico de tendência da temperatura (20–40 °C), além de gauge e tendência do ADC (0–1023).
 
-O firmware possui indicação numérica, scan OneWire, AP, HTTP, endpoint JSON, gauge e gráfico de tendência da temperatura (20–40 °C) e do ADC (0–1023), ambos com histórico limitado a 60 pontos. Os gauges ficam lado a lado, assim como os gráficos, e o timestamp permanece no JSON sem quadro separado.
+O firmware deste repositório implementa o sistema de monitoramento e controle térmico descrito em [docs/descricao.txt](docs/descricao.txt): AP aberto com SSID derivado do MAC, IP fixo 192.168.4.1/24 com DHCP, dashboard web em pt-BR (gauge e gráfico de tendência com escala fixa de 20–90 °C, botão liga/desliga da resistência, alertas e rearme do alarme) e telemetria JSON em `/json`. A segurança térmica corta a carga em ≥ 80,0 °C com latch e rearme manual, bloqueia a carga sem leitura válida e mantém amostragem de 1,2 s ± 150 ms (leitura vinculada à ROM do DS18B20 identificada no boot) sem bloquear o loop. Comandos principais: `pio run -d firmware` (build), `pio test -d firmware -e native` (testes HOST) e gravação em `/dev/ttyUSB0` (ver [AGENTS.md](AGENTS.md) §4).
 
 ### Estudos de caso
 
@@ -81,7 +81,7 @@ Os estudos de caso abaixo aplicam a mesma abordagem SDD da skill [sdd-embarcado]
 
 Em **todo o processo** (especificação, design, planejamento de tarefas, implementação do firmware, testes e documentação), cada estudo foi conduzido com o modelo de IA indicado acima.
 
-A implementação principal segue o processo SDD da skill em [firmware/](firmware/), com especificação, design e tarefas em [.specs/features/dashboard-esp8266/](.specs/features/dashboard-esp8266/) e validação registrada em [SUMMARY.md](.specs/features/dashboard-esp8266/SUMMARY.md).
+A implementação principal segue o processo SDD da skill em [firmware/](firmware/), com especificação, design e tarefas em [.specs/features/controle-termico/](.specs/features/controle-termico/) e evidências de validação em [docs/05-testing/controle-termico/](docs/05-testing/controle-termico/).
 
 ## Use a skill sdd-embarcado
 

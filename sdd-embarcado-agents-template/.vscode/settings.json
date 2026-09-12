@@ -1,0 +1,21 @@
+{
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/build/**": true,
+    "**/.pio/**": true,
+    "**/.github/skills/monografia-engenharia-latex/**": true,
+    "**/.github/skills/artigo-cientifico-latex/**": true
+  },
+  "chat.instructions.ignoreFiles": [
+    ".github/skills/monografia-engenharia-latex/**",
+    ".github/skills/artigo-cientifico-latex/**",
+    "build/**",
+    ".pio/**",
+    "*.aux",
+    "*.log",
+    "*.pdf"
+  ],
+  "github.copilot.advanced": {
+    "contextLimit": "strict"
+  }
+}
