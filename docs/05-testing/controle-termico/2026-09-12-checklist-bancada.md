@@ -11,15 +11,17 @@
 
 Legenda: **PASS** = evidência registrada · **PASS\*** = evidência com nota/limitação · **PENDENTE** = requer ação física do operador (indisponível em 2026-09-12).
 
+> **Revisão DEC-07 (2ª sessão de bancada, 2026-09-12):** amostragem **1200 ms ± 150 ms** e polling da dashboard **2000 ms** (reflexão ≤ 2,5 s); leitura/conversão do DS18B20 **vinculadas à ROM** identificada na varredura; re-varredura corrigida (`getDeviceCount()` do `DallasTemperature` é cacheado — `rescan()` agora chama `begin()`). Evidências novas com sufixo `-dec07`.
+
 ## Resultados por critério de aceitação
 
 | CA | Resultado | Evidência |
 |---|---|---|
-| CA-001 | PENDENTE (detecção física) | Ausência registrada no boot (`[sensor] nenhum DS18B20 detectado` em `2026-09-12-boot-producao.log`); identificação de ROM requer sensor conectado ao D2 |
+| CA-001 | PASS* | ROM **vinculada e usada nas leituras** (`[sensor] DS18B20 detectado (ROM 28FFE203B41605C2)`; leituras válidas 36–37 °C) — `...-bateria-injecao-dec07.log`, `...-rede-dec07.log`; limitação de **hardware**: no boot deste protótipo a detecção falhou de forma intermitente (vínculo na re-varredura, 5–15 s) e o barramento alterna presente/ausente — sintoma de pull-up ausente/fraco (P3); carga sempre bloqueada sem leitura válida |
 | CA-002 | PASS* | Ausência **real** observada: `state=NO_SENSOR`, `sensor=false`, carga bloqueada e `ON` recusado com motivo (`2026-09-12-bancada-rede.log`); re-varredura de 5 s implementada (timer coberto em `test_periodic_timer`) |
-| CA-003 | PENDENTE | Requer conectar o DS18B20 com o sistema em operação (re-varredura + retomada de leituras) |
-| CA-004 | PASS | HOST (`test_periodic_timer`) + bancada: janela dos últimos 60 intervalos = 999–1001 ms sob polling e alarme; bateria `min=max=1000` (`2026-09-12-bancada-rede-keepalive.log`, `2026-09-12-bancada-bateria-injecao.log`) |
-| CA-005 | PASS | Conversão assíncrona (`setWaitForConversion(false)`, leitura ao fim do ciclo e re-disparo imediato — inspeção) + janelas de amostragem estáveis durante alarme/polling |
+| CA-003 | PASS | Detecção e perda em runtime observadas com o sensor físico (mesma ROM revinculada): `[sensor] DS18B20 detectado (ROM …)` + `sensor detectado em runtime` e `[sensor] sensor ausente — carga bloqueada` — `2026-09-12-bancada-sensor-instavel-dec07.log`, `2026-09-12-boot-dec07.log` |
+| CA-004 | PASS | HOST (`test_periodic_timer`) + bancada (DEC-07): janela [1050, 1350] ms — bateria `min=1176 max=1224`; `samp_min/max/win = 1200` sob polling de 60 s (`2026-09-12-bancada-bateria-injecao-dec07.log`, `2026-09-12-bancada-rede-dec07.log`) |
+| CA-005 | PASS | Conversão assíncrona (`setWaitForConversion(false)`; leitura ao fim do ciclo e re-disparo imediato — inspeção) + conversão/leitura da **ROM vinculada** (`requestTemperaturesByAddress`/`getTempC`); cadência mantida sob alarme/polling (`...-rede-dec07.log`) |
 | CA-006 | PASS | HOST (`test_control_policy`) + bancada via HTTP: `/on` → PWM 1023, `/off` → 0 (`2026-09-12-bancada-rede-keepalive.log`); console ON/OFF (`...-bateria-injecao.log`) |
 | CA-007 | PASS | HOST + bancada: recusas com motivo (`no_sensor`/`invalid_reading`/`latched`) e PWM mantido em 0 (bateria + `...-rede.log`) |
 | CA-008 | PASS | HOST (fronteira 79,99/80,00) + bateria: 79,90 °C mantém PWM 1023 sem alarme |
@@ -29,15 +31,15 @@ Legenda: **PASS** = evidência registrada · **PASS\*** = evidência com nota/li
 | CA-012 | PASS | Bateria checks 5, 6 e 9: rearme recusado com `latched`/`temp_high` e latch mantido |
 | CA-013 | PASS (HOST); audição PENDENTE | Fases 150/2000 ms verificadas nos testes HOST e acionamento observado na bancada (injeção); confirmação **audível** depende do operador |
 | CA-014 | PASS | HOST + injeção `FAULT`: sem condição ≥ 80 °C ⇒ `alarm=false` (buzzer permanece desligado) |
-| CA-015 | PASS* | HOST + injeção `FAULT`: PWM 0 imediato, `block=invalid_reading`, `ON` recusado (bateria check 11); variante com desconexão física real pendente de operador |
+| CA-015 | PASS* | HOST + injeção `FAULT` (PWM 0, `block=invalid_reading`, `ON` recusado — bateria check 11) + **perda física observada** (barramento instável → `NO_SENSOR`/`INVALID_READING` com PWM 0 e estado explícito — `...-sensor-instavel-dec07.log`); corte a partir de carga ligada evidenciado por injeção (checks 4/10) |
 | CA-016 | PASS | Bateria check 12: bloqueio removido com leitura válida, **sem religamento** (DEC-04); novo `ON` aceito |
 | CA-017 | PASS | Sensor ausente real e falha injetada expostos explicitamente na dashboard e no `/json`, sem temperatura falsa (`temp:"—"`, `2026-09-12-dashboard-producao-sensor-ausente.png`) |
 | CA-018 | PASS | Bateria check 14: reset limpa o latch (volátil) e mantém carga desligada; boot de produção com motivo registrado (`reset: External System`) |
 | CA-019 | PASS | AP aberto `ESP8266_101026` associado por cliente real; DHCP 192.168.4.100/24, gateway 192.168.4.1; dashboard servida (resumo em `...-rede.log`) |
 | CA-020 | PASS | Payload real com todos os campos do contrato (26+2 campos, ordem fixa) + HOST (`test_status_json`); capturas em `...-rede*.log` |
-| CA-021 | PASS | Keep-alive ~60 s sob alarme: `/json` máx **26,6 ms** (média 12 ms), páginas 31–81 ms completas, janela 999–1001 ms, sem reset (`...-rede-keepalive.log`); cenário "conexão nova por requisição" (curl): 60/60, máx **38,6 ms** (`...-rede-churn.log`) |
+| CA-021 | PASS | 2ª sessão (DEC-07): 59 requisições em 60 s sob alarme, média **13 ms**, máx **17 ms**; página de 12.913 B em **32 ms**; janela de amostragem 1200 ms; sem reset (`2026-09-12-bancada-rede-dec07.log`). 1ª sessão: keep-alive máx 26,6 ms; churn máx 38,6 ms (`...-rede-keepalive.log`, `...-rede-churn.log`) |
 | CA-022 | PASS | Navegador real 1366×768: `scrollHeight=768` (**sem rolagem**), **23 tooltips**, valor numérico + gauge, gráfico 20–90 °C com grade e limite 80 °C, botão com cores de estado, métricas (idle/RAM/flash/uptime), alertas e latch+rearme — screenshots `2026-09-12-dashboard-*.png` |
-| CA-023 | PASS | Sem recarga: marcador de sessão do navegador preservado entre as transições normal→alarme→rearme→carga ligada→corte (≤ 2 s; verificações via DOM + screenshots) |
+| CA-023 | PASS | Polling medido por Resource Timing: **2000 ms** entre `fetch('/json')`; reflexão no DOM **1426 ms** (ON) e **1996 ms** (OFF), ambos ≤ 2,5 s (DEC-07), sem recarga de página (`2026-09-12-dashboard-dec07.log`, `2026-09-12-dashboard-dec07.png`) |
 | CA-024 | PASS | `strings`: console presente no env `bancada` (1) e ausente no `nodemcuv2` (0); bateria usa os comandos no hardware real |
 | CA-025 | PASS | Build: sketch 31,2% e RAM 39,1% (produção); 31,4%/41,6% (bancada) — metas ≤ 45% e ≤ 50% (`2026-09-12-build-footprint.log`) |
 | CA-026 | PASS | Inspeção (sem `delay()`, sem ISR, sem timers de hardware, sem persistência) + sessões contínuas de bancada sem reset espontâneo |
@@ -50,10 +52,13 @@ Legenda: **PASS** = evidência registrada · **PASS\*** = evidência com nota/li
 2. **Atraso de ~3 s na primeira `/`** após ociosidade (power-save do rádio) → `WiFi.setSleepMode(WIFI_NONE_SLEEP)` (**ADR-011**).
 3. **Jitter poluído pelo transiente de boot nas estatísticas cumulativas** → campos `samp_win_min_ms`/`samp_win_max_ms` (janela dos últimos ≤60 intervalos) no contrato `/json`, permitindo evidência de regime (CA-004/CA-021).
 4. Power-save do cliente (host Linux) agrava atrasos de ACK; nos testes foi desligado na conexão. Firmware agora tolera clientes lentos (sem truncamento com MSS 1460).
+5. **Re-varredura ineficaz (2ª sessão):** `getDeviceCount()` do `DallasTemperature` é **cacheado** e não re-varre o barramento — a re-varredura de 5 s (FR-003) nunca detectaria conexão/desconexão em runtime. Corrigido: `rescan()` chama `begin()` (re-enumeração real) e revincula a ROM (**ADR-013**).
+6. **Barramento OneWire intermitente neste protótipo:** a mesma ROM alternou presente/ausente em rescans sucessivos e a detecção de boot falhou em todos os resets observados (recuperação automática pela re-varredura). Sintoma compatível com pull-up ausente/fraco — **P3 segue em aberto** (confirmar 4,7 kΩ entre D2 e 3,3 V). O firmware permanece seguro em todas as transições (carga bloqueada; estado explícito no `/json` e na dashboard).
 
 ## Limitações e pendências físicas
 
-- **CA-001/CA-003** (detecção/reconexão do DS18B20) e **CA-013 audição** e **CA-015 variante física**: dependem do operador (conectar/desconectar o sensor no D2; ouvir o buzzer). Roteiro pronto no `HANDOFF.md`.
+- **CA-001** mantém limitação de hardware (detecção de boot intermitente) e **P3** (pull-up OneWire) segue **em aberto**: confirmar 4,7 kΩ entre DQ (D2) e 3,3 V e a fixação dos fios — sem isso a detecção/reconexão fica intermitente, embora o firmware bloqueie e recupere sozinho (FR-002/FR-003).
+- **CA-013 audição do buzzer**: depende do operador (gravar `bancada`, `TEMP 8000`, ouvir 150 ms a cada ~2 s); lógica já verificada em HOST e por acionamento em injeção.
 - **Ensaio térmico real** na fronteira de 80 °C não é evidência primária exigida (QA-4): fronteira validada por HOST + injeção no firmware real.
 - Cliente pode ocasionalmente fechar a conexão keep-alive ociosa (comportamento do core HTTP); navegadores reconectam de forma transparente (1 reconexão em 60 requisições na sessão medida).
 

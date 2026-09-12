@@ -188,6 +188,40 @@
 - **Testes:** auditoria documental (HOST).
 - **Gate:** matriz atualizada + documentos revisados no diff.
 
+## M5 — Revisão DEC-07: vínculo de ROM e cadências (2ª sessão de bancada, 2026-09-12)
+
+> Substitui as referências de 1000 ms/1 s e de leitura por índice das tarefas M2–M3. Decisões: `spec.md` DEC-07 e `design.md` ADR-013.
+
+### [x] T-018 Atualizar artefatos SDD e documentos normativos (DEC-07/ADR-013)
+
+- **Requisitos:** FR-001, FR-004, FR-005, FR-029, NFR-003.
+- **Onde:** `spec.md`, `design.md`, `constitution.md`, `AGENTS.md`, `ROADMAP.md`, `CODEBASE.md`, `README.md`.
+- **Feito quando:** amostragem 1200 ms ± 150 ms, polling 2000 ms (reflexão ≤ 2,5 s) e vínculo de ROM registrados; CA-004 passa a [1050, 1350] ms.
+- **Gate:** documentos revisados no diff; fontes normativas sem referência vigente a 1000 ms.
+
+### [x] T-019 Vincular leitura/conversão à ROM e corrigir a re-varredura
+
+- **Requisitos:** FR-001, FR-003, FR-005, FR-014.
+- **Onde:** `firmware/src/ds18b20_sensor.{h,cpp}`.
+- **Feito quando:** varredura do boot vincula a ROM (`getAddress`); conversão por `requestTemperaturesByAddress(rom)` e leitura por `getTempC(rom)`; `rescan()` re-enumera com `begin()` (o `getDeviceCount()` é cacheado) e revincula/limpa o vínculo; log de ROM registrado.
+- **Testes:** bancada — ROM `28FFE203B41605C2` vinculada; leituras válidas 36–37 °C; perda/retomada em runtime com carga bloqueada.
+- **Gate:** builds SUCCESS; evidências `...-bateria-injecao-dec07.log`, `...-rede-dec07.log`, `...-sensor-instavel-dec07.log`.
+
+### [x] T-020 Revisar cadências (amostragem 1200 ms; dashboard 2000 ms)
+
+- **Requisitos:** FR-004, FR-029, NFR-003.
+- **Onde:** `firmware/src/config.h`, `firmware/src/web/dashboard_html.h`, `firmware/tools/bench_injection_test.py`, `firmware/src/main.cpp` (comentários).
+- **Feito quando:** `kSamplePeriodMs = 1200`; `setInterval(refresh, 2000)`; janela da bateria [1050, 1350] ms.
+- **Testes:** bateria check 13 (`min=1176 max=1224`); polling de 60 s (`samp=1200`); Resource Timing 2000 ms; reflexão 1426/1996 ms.
+- **Gate:** evidências `...-bateria-injecao-dec07.log`, `...-rede-dec07.log`, `...-dashboard-dec07.log`.
+
+### [x] T-021 Revalidar bancada, regravar produção e atualizar rastreabilidade
+
+- **Requisitos:** CA-004, CA-021, CA-023, CA-024, CA-025, CA-028.
+- **Onde:** placa `/dev/ttyUSB0`; `docs/05-testing/controle-termico/`; matriz `spec.md` §9; `STATUS.md`/`HANDOFF.md`.
+- **Feito quando:** HOST 37/37; bateria 14/14; rede e dashboard medidos; produção regravada com estado final seguro documentado; matriz e documentos atualizados.
+- **Gate:** logs `-dec07` + `2026-09-12-dashboard-dec07.png`; pendências físicas explícitas (pull-up P3; audição do buzzer).
+
 ## Entregáveis e aceite
 
 **Arquivos esperados**
@@ -210,7 +244,7 @@
 
 - Fronteira térmica: CA-008/CA-009 (79,90 °C mantém; 80,00 °C corta + latch na mesma avaliação).
 - Latch/rearme: CA-010, CA-011, CA-012; fail-safe sem religamento: CA-016.
-- Timing: CA-004 (1000 ms ± 150 ms), CA-013 (150/2000 ms ± 20%), CA-021 (HTTP ≤ 500 ms + amostragem estável).
+- Timing: CA-004 (1200 ms ± 150 ms — DEC-07), CA-013 (150/2000 ms ± 20%), CA-021 (HTTP ≤ 500 ms + amostragem estável).
 - Memória: CA-025 (≤ 45% sketch, ≤ 50% RAM) e NFR-002 (sem alocação no loop).
 - Rede/UI: CA-019, CA-020, CA-022, CA-023; diagnóstico: CA-024; reprodutibilidade: CA-027.
 
