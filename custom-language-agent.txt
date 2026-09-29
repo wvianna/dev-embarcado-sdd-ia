@@ -1,0 +1,29 @@
+{
+    "name": "llama.cpp LAN — Agentic Coding",
+    "vendor": "customendpoint",
+    "apiType": "chat-completions",
+    "url": "http://192.168.100.153:8080/v1",
+    "models": [
+        {
+            "id": "DavidAU/Qwen3.8-27B-TURBO-Fable-Cold-Fusion-735-882-Heretic-Uncensored-NEO-CODER-MAX-MTP-GGUF:IQ2_M",
+            "name": "Qwen 3.8 27B — Agentic Coding",
+            "url": "http://192.168.100.153:8080/v1",
+            "toolCalling": true,
+            "vision": true,
+            "maxInputTokens": 13107,
+            "maxOutputTokens": 8192
+        },
+        {
+            "id": "HauhauCS/Gemma-4-E4B-Uncensored-HauhauCS-Aggressive:Q4_K_M",
+            "name": "Gemma 4 E4B — General Coding",
+            "url": "http://192.168.100.153:8080/v1",
+            "toolCalling": true,
+            "vision": true,
+            "maxInputTokens": 13107,
+            "maxOutputTokens": 8192
+        }
+    ]
+}
+
+
+vim .config/Code/User/chatLanguageModels.json
